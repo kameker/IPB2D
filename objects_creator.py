@@ -1,0 +1,53 @@
+import pymunk as pm
+
+
+class ObjectsCreator():
+    def __init__(self):
+        self.height = 900
+        self.width = 1000
+        self.objects = []
+
+    def ground(self, space):
+        rects = [
+            [(self.width / 2, self.height - 10), (self.width, 20)],
+            [(self.width / 2, 10), (self.width, 20)],
+            [(10, self.height / 2), (20, self.height)],
+            [(self.width - 10, self.height / 2), (20, self.height)]
+        ]
+        for pos, size in rects:
+            body = pm.Body(body_type=pm.Body.STATIC)
+            body.position = pos
+
+            shape = pm.Poly.create_box(body, size)
+            shape.friction = 1
+            shape.elasticity = 0.3
+            space.add(body, shape)
+
+    def delete_all_objects(self, space):
+        for i in self.objects:
+            space.remove(i[0], i[1])
+        self.objects = []
+
+    def stop_all_objects(self):
+        for i in self.objects:
+            i[1].body_type = pm.Body.STATIC
+
+    def resume_all_objects(self):
+        for i in self.objects:
+            i[1].body_type = pm.Body.DYNAMIC
+
+    def add_obj(self, position, typeOb, space, mass, args):
+        shape = None
+        body = pm.Body()
+        body.position = position
+        if typeOb == 0:
+            shape = pm.Circle(body, args)
+            shape.elasticity = 0.9
+        elif typeOb == 4:
+            shape = pm.Poly.create_box(body, (args * 2, args))
+            shape.elasticity = 0
+        shape.mass = mass
+        shape.friction = 0.5
+        shape.color = (0, 255, 0, 100)
+        space.add(body, shape)
+        self.objects.append((shape, body))
