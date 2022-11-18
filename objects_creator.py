@@ -30,6 +30,7 @@ class ObjectsCreator:
         if search is not None:
             if search.shape.collision_type == 0:
                 space.remove(search.shape, self.bodyO[self.shapeO.index(search.shape)])
+        self.objects.remove((search.shape, self.bodyO[self.shapeO.index(search.shape)]))
 
     def delete_all_objects(self, space):
         for i in self.objects:

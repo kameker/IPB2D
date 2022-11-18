@@ -62,6 +62,8 @@ class Game():
                     elif event.key == pg.K_DELETE:
                         OCreator.delete_object(space, mouse_position)
                         on = False
+                    elif event.key == pg.K_TAB:
+                        OCreator.delete_all_objects(space)
             world.move_founded_object(mouse_position)
             world.draw_circle(mouse_position, space)
             world.draw(space, window, draw_options)
