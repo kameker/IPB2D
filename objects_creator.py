@@ -1,11 +1,13 @@
 import pymunk as pm
 
 
-class ObjectsCreator():
+class ObjectsCreator:
     def __init__(self):
         self.height = 900
         self.width = 1000
         self.objects = []
+        self.bodyO = []
+        self.shapeO = []
 
     def ground(self, space):
         rects = [
@@ -20,8 +22,14 @@ class ObjectsCreator():
 
             shape = pm.Poly.create_box(body, size)
             shape.friction = 1
-            shape.elasticity = 0.3
+            shape.elasticity = 1
             space.add(body, shape)
+
+    def delete_object(self, space, position):
+        search = space.point_query_nearest(position, 0, pm.ShapeFilter())
+        if search is not None:
+            if search.shape.collision_type == 0:
+                space.remove(search.shape, self.bodyO[self.shapeO.index(search.shape)])
 
     def delete_all_objects(self, space):
         for i in self.objects:
@@ -50,4 +58,6 @@ class ObjectsCreator():
         shape.friction = 0.5
         shape.color = (0, 255, 0, 100)
         space.add(body, shape)
+        self.bodyO.append(body)
+        self.shapeO.append(shape)
         self.objects.append((shape, body))

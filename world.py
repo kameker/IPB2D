@@ -1,5 +1,6 @@
 import pygame as pg
 import pymunk as pm
+from pymunk import pygame_util
 
 
 class World(pg.Surface):
@@ -20,7 +21,6 @@ class World(pg.Surface):
         if search is not None:
             if search.shape.collision_type == 0:
                 self.shape_founded = search.shape
-        print(self.shape_founded)
 
     def resume_object(self):
         self.shape_founded = None
@@ -33,7 +33,7 @@ class World(pg.Surface):
 
     def draw_circle(self, position, space, r=12, width=1):
         search = space.point_query_nearest(position, 0, pm.ShapeFilter())
-        if search != None:
+        if search is not None:
             if search.shape.collision_type == 0:
                 # Перевести координаты pymunk в координаты pygame
                 doo_center = pm.pygame_util.to_pygame(search.shape.body.position, self)
@@ -43,5 +43,3 @@ class World(pg.Surface):
         window.fill("gray")
         space.debug_draw(draw_options)
         pg.display.update()
-
-

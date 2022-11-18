@@ -32,6 +32,7 @@ class Game():
         space.gravity = 0, g
         PAUSE = False
         run = True
+        on = False
         OCreator = ObjectsCreator()
         OCreator.ground(space)
         while run:
@@ -42,12 +43,14 @@ class Game():
                     break
                 if event.type == pg.MOUSEBUTTONDOWN:
                     if event.button == 3:
-                        OCreator.add_obj(mouse_position, 4, space, 10, 30)
+                        OCreator.add_obj(mouse_position, 0, space, 10, 30)
                     elif event.button == 1:
-                        world.pick_object(space, mouse_position)
-                if event.type == pg.MOUSEBUTTONUP:
-                    if event.button == 1:
-                        world.resume_object()
+                        if on:
+                            world.resume_object()
+                            on = False
+                        else:
+                            world.pick_object(space, mouse_position)
+                            on = True
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_SPACE:
                         if PAUSE:
@@ -57,9 +60,12 @@ class Game():
                             OCreator.stop_all_objects()
                             PAUSE = True
                     elif event.key == pg.K_DELETE:
-                        OCreator.delete_all_objects(space)
+                        OCreator.delete_object(space, mouse_position)
+                        on = False
             world.move_founded_object(mouse_position)
+            world.draw_circle(mouse_position, space)
             world.draw(space, window, draw_options)
+
             self.show_fps(window, clock, font)
             space.step(1 / self.fps)
             clock.tick(self.fps)
