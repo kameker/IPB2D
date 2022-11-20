@@ -1,4 +1,5 @@
 import pymunk as pm
+import json
 
 
 class ObjectsCreator:
@@ -8,6 +9,8 @@ class ObjectsCreator:
         self.objects = []
         self.bodyO = []
         self.shapeO = []
+        self.id = 0
+        self.d ={}
 
     def ground(self, space):
         rects = [
@@ -24,9 +27,6 @@ class ObjectsCreator:
             shape.friction = 1
             shape.elasticity = 0.5
             space.add(body, shape)
-
-    def deg_to_rad(self, degree):
-        return degree / 180 * 3.14
 
     def delete_object(self, space, position):
         search = space.point_query_nearest(position, 0, pm.ShapeFilter())
@@ -48,6 +48,22 @@ class ObjectsCreator:
             if search.shape.collision_type == 0:
                 self.bodyO[self.shapeO.index(search.shape)]._set_angle(
                     float(str(self.bodyO[self.shapeO.index(search.shape)]._get_angle())[0:6]) + 0.785)
+
+    def save_field(self):
+        k = 0
+        for i in self.objects:
+            self.d[k] = {
+                "mass": i[0].mass,
+                "friction": i[0].friction,
+                "elasticity": i[0].elasticity,
+                "color": i[0].color,
+                'position': i[1].position
+            }
+            k += 1
+        data = json.dumps(self.d)
+        data = json.loads(str(data))
+        with open('objects.json', "w") as file:
+           json.dump(data, file, indent=4)
 
     def delete_all_objects(self, space):
         for i in self.objects:
