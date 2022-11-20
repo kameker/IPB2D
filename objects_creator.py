@@ -67,7 +67,8 @@ class ObjectsCreator:
                 'position': i[1].position,
                 'shape': t,
                 'body_type': i[1].body_type,
-                'args': size
+                'args': size,
+                'angle':i[1]._get_angle()
             }
             k += 1
         data = json.dumps(self.d)
@@ -98,7 +99,6 @@ class ObjectsCreator:
         elif typeOb == 4:
             shape = pm.Poly.create_box(body, (args * 2, args))
             shape.elasticity = 0
-        print(shape.radius)
         shape.mass = mass
         shape.friction = 0.5
         shape.color = (0, 255, 0, 100)
@@ -106,3 +106,24 @@ class ObjectsCreator:
         self.bodyO.append(body)
         self.shapeO.append(shape)
         self.objects.append((shape, body))
+
+    def load_field(self, space):
+        with open("objects.json", 'r') as field:
+            field = json.load(field)
+            for i in field:
+                data = field[i]
+                body = pm.Body()
+                body.position = data['position']
+                if data['shape'] == 0:
+                    shape = pm.Circle(body, data['args'])
+                    shape.elasticity = 0.5
+                elif data['shape'] == 4:
+                    shape = pm.Poly.create_box(body, (data['args'] * 2, data['args']))
+                    shape.elasticity = 0
+                body.body_type = data['body_type']
+                shape.color = data['color']
+                shape.friction = data['friction']
+                shape.mass = data['mass']
+                body._set_angle(data['angle'])
+                space.add(body, shape)
+
