@@ -10,7 +10,7 @@ class ObjectsCreator:
         self.bodyO = []
         self.shapeO = []
         self.id = 0
-        self.d ={}
+        self.d = {}
 
     def ground(self, space):
         rects = [
@@ -52,18 +52,28 @@ class ObjectsCreator:
     def save_field(self):
         k = 0
         for i in self.objects:
+            f = str(i[0])[15:str(i[0]).index(' ')]
+            if f == "Circle":
+                t = 0
+                size = i[0].radius
+            elif f == "Poly":
+                t = 4
+                size = abs(i[0].get_vertices()[0][0])
             self.d[k] = {
                 "mass": i[0].mass,
                 "friction": i[0].friction,
                 "elasticity": i[0].elasticity,
                 "color": i[0].color,
-                'position': i[1].position
+                'position': i[1].position,
+                'shape': t,
+                'body_type': i[1].body_type,
+                'args': size
             }
             k += 1
         data = json.dumps(self.d)
         data = json.loads(str(data))
         with open('objects.json', "w") as file:
-           json.dump(data, file, indent=4)
+            json.dump(data, file, indent=4)
 
     def delete_all_objects(self, space):
         for i in self.objects:
@@ -88,6 +98,7 @@ class ObjectsCreator:
         elif typeOb == 4:
             shape = pm.Poly.create_box(body, (args * 2, args))
             shape.elasticity = 0
+        print(shape.radius)
         shape.mass = mass
         shape.friction = 0.5
         shape.color = (0, 255, 0, 100)

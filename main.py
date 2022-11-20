@@ -43,7 +43,7 @@ class Game():
                     break
                 if event.type == pg.MOUSEBUTTONDOWN:
                     if event.button == 3:
-                        OCreator.add_obj(mouse_position, 4, space, 10, 30)
+                        OCreator.add_obj(mouse_position, 0, space, 10, 30)
                     elif event.button == 1:
                         if on:
                             world.resume_object()
@@ -78,12 +78,14 @@ class Game():
             space.step(1 / self.fps)
             clock.tick(self.fps)
         pg.quit()
+        OCreator.save_field()
 
     def show_fps(self, camera, clock, font):
         fps = font.render('{0:.2f}'.format(clock.get_fps()), True, [50, 50, 50])
         camera.blit(fps, [10, 10])
 
 
-if __name__ == '__main__':
+def run():
     game = Game()
     game.game_init()
+run()
