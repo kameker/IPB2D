@@ -126,4 +126,7 @@ class ObjectsCreator:
                 shape.mass = data['mass']
                 body._set_angle(data['angle'])
                 space.add(body, shape)
+                self.bodyO.append(body)
+                self.shapeO.append(shape)
+                self.objects.append((shape, body))
 

@@ -35,7 +35,7 @@ class Game():
         on = False
         OCreator = ObjectsCreator()
         OCreator.ground(space)
-        #OCreator.load_field(space)
+        OCreator.load_field(space)
         while run:
             mouse_position = pg.mouse.get_pos()
             for event in pg.event.get():
