@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>90</y>
+     <y>20</y>
      <width>365</width>
      <height>80</height>
     </rect>
@@ -44,7 +44,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>200</y>
+     <y>120</y>
      <width>366</width>
      <height>80</height>
     </rect>
@@ -71,7 +71,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>310</y>
+     <y>220</y>
      <width>365</width>
      <height>80</height>
     </rect>
@@ -94,32 +94,11 @@
     </item>
    </layout>
   </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>15</y>
-     <width>341</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>16</pointsize>
-    </font>
-   </property>
-   <property name="layoutDirection">
-    <enum>Qt::LeftToRight</enum>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
   <widget class="QWidget" name="horizontalLayoutWidget_4">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>420</y>
+     <y>320</y>
      <width>365</width>
      <height>80</height>
     </rect>
@@ -138,7 +117,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="line_elasticity_2"/>
+     <widget class="QLineEdit" name="line_color"/>
     </item>
    </layout>
   </widget>
@@ -160,11 +139,11 @@
     <string>Сохранить</string>
    </property>
   </widget>
-  <widget class="QRadioButton" name="radioButton">
+  <widget class="QRadioButton" name="static_b">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>530</y>
+     <x>20</x>
+     <y>550</y>
      <width>171</width>
      <height>21</height>
     </rect>
@@ -178,11 +157,11 @@
     <string>Статичный</string>
    </property>
   </widget>
-  <widget class="QRadioButton" name="radioButton_2">
+  <widget class="QRadioButton" name="dynamic_b">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>560</y>
+     <x>20</x>
+     <y>580</y>
      <width>161</width>
      <height>31</height>
     </rect>
@@ -194,6 +173,88 @@
    </property>
    <property name="text">
     <string>Динамический</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget_5">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>440</y>
+     <width>369</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_5">
+    <item>
+     <widget class="QLineEdit" name="wr"/>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="height"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>400</y>
+     <width>151</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>длина/радиус</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>400</y>
+     <width>151</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>ширина</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>520</y>
+     <width>71</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>угол</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="angle">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>570</y>
+     <width>113</width>
+     <height>20</height>
+    </rect>
    </property>
   </widget>
  </widget>

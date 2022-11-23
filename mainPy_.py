@@ -1,4 +1,4 @@
-import sys  # sys нужен для передачи argv в QApplication
+import sys
 from PyQt5 import QtWidgets
 from mainPy import Ui_IPB2D
 from main import run
