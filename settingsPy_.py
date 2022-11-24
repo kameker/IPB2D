@@ -42,7 +42,8 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
         f = str(self.objects[0])[15:str(self.objects[0]).index(' ')]
         if f == "Circle":
             t = 0
-            size = self.objects[0].radius
+            size = float(self.wr.text())
+            print(size)
         elif f == "Poly":
             t = 4
             size = [float(self.wr.text()), float(self.height.text())]
