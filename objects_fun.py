@@ -56,9 +56,11 @@ class ObjectsCreator:
             if f == "Circle":
                 t = 0
                 size = i[0].radius
+                h = 0
             elif f == "Poly":
                 t = 4
                 size = abs(i[0].get_vertices()[0][0])
+                h = abs(i[0].get_vertices()[0][1])
             self.d[k] = {
                 "mass": i[0].mass,
                 "friction": i[0].friction,
@@ -67,7 +69,7 @@ class ObjectsCreator:
                 'position': i[1].position,
                 'shape': t,
                 'body_type': i[1].body_type,
-                'args': size,
+                'args': [size, h],
                 'angle': i[1]._get_angle()
             }
             k += 1
@@ -97,7 +99,7 @@ class ObjectsCreator:
             shape = pm.Circle(body, args)
             shape.elasticity = 1
         elif typeOb == 4:
-            shape = pm.Poly.create_box(body, (args * 2, args))
+            shape = pm.Poly.create_box(body, (args, args))
             shape.elasticity = 0
         shape.mass = mass
         shape.friction = 0.5
@@ -108,7 +110,6 @@ class ObjectsCreator:
         self.objects.append((shape, body))
 
     def load_field(self, space):
-
         with open("objects.json", 'r') as field:
             field = json.load(field)
             for i in field:
@@ -119,7 +120,8 @@ class ObjectsCreator:
                     shape = pm.Circle(body, data['args'])
                     shape.elasticity = 0.5
                 elif data['shape'] == 4:
-                    shape = pm.Poly.create_box(body, (data['args'] * 2, data['args']))
+                    print(data['args'])
+                    shape = pm.Poly.create_box(body, (data['args'][0], data['args'][1]))
                     shape.elasticity = 0
                 body.body_type = data['body_type']
                 shape.color = data['color']
@@ -137,24 +139,29 @@ class ObjectsCreator:
             if search.shape.collision_type == 0:
                 return search.shape, self.bodyO[self.shapeO.index(search.shape)]
 
-    def edit_object(self, space,position):
+    def edit_object(self, space, position):
         with open("object.json", 'r') as field:
             search = space.point_query_nearest(position, 0, pm.ShapeFilter())
             if search is not None:
                 if search.shape.collision_type == 0:
                     body = self.bodyO[self.shapeO.index(search.shape)]
+            self.delete_object(space, position)
             field = json.load(field)
             data = field['0']
             body.position = data['position']
+            print(data['args'][0])
             if data['shape'] == 0:
-                search.shape = pm.Circle(body, data['args'])
-                search.shape.elasticity = 0.5
+                shape = pm.Circle(body, data['args'])
+                shape.elasticity = 0.5
             elif data['shape'] == 4:
-                shape = pm.Poly.create_box(body, (data['args'] * 2, data['args']))
+                shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
                 shape.elasticity = 0
             body.body_type = data['body_type']
-            search.shape.color = data['color']
-            search.shape.friction = data['friction']
-            search.shape.mass = data['mass']
+            shape.color = data['color']
+            shape.friction = data['friction']
+            shape.mass = data['mass']
             body._set_angle(data['angle'])
-
+            space.add(body, shape)
+            self.bodyO.append(body)
+            self.shapeO.append(shape)
+            self.objects.append((shape, body))
