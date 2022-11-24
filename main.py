@@ -45,7 +45,7 @@ class Game():
                     break
                 if event.type == pg.MOUSEBUTTONDOWN:
                     if event.button == 3:
-                        OCreator.add_obj(mouse_position, 0, space, 10, 30)
+                        OCreator.add_obj(mouse_position, 4, space, 10, 30)
                     elif event.button == 1:
                         if on:
                             world.resume_object()

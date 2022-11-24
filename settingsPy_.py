@@ -47,6 +47,7 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
         elif f == "Poly":
             t = 4
             size = [float(self.wr.text()), float(self.height.text())]
+        print(self.line_elasticity.text())
         d = {0: {
             "mass": float(self.line_mass.text()),
             "friction": float(self.line_friction.text()),

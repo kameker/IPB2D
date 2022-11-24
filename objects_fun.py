@@ -151,10 +151,9 @@ class ObjectsCreator:
             body.position = data['position']
             if data['shape'] == 0:
                 shape = pm.Circle(body, data['args'])
-                shape.elasticity = 0.5
             elif data['shape'] == 4:
                 shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
-                shape.elasticity = 0
+            shape.elasticity = data['elasticity']
             body.body_type = data['body_type']
             shape.color = data['color']
             shape.friction = data['friction']
