@@ -20,16 +20,18 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
         f = str(objects[0])[15:str(objects[0]).index(' ')]
         if f == "Circle":
             size = objects[0].radius
+            h = 0
         elif f == "Poly":
             size = abs(objects[0].get_vertices()[0][0])
+            h = abs(objects[0].get_vertices()[0][1])
         self.objects = objects
         self.line_mass.setText(str(objects[0].mass))
         self.line_friction.setText(str(objects[0].friction))
         self.line_elasticity.setText(str(objects[0].elasticity))
         self.line_color.setText(str(objects[0].color))
-        self.angle.setText(str(float(str(objects[1]._get_angle())[0:4])*180/3.14)[0:7])
+        self.angle.setText(str(float(str(objects[1]._get_angle())[0:4]) * 180 / 3.14)[0:7])
         self.wr.setText(str(size))
-        self.height.setText(str(size))
+        self.height.setText(str(h))
         if objects[1].body_type == 0:
             self.static_b.setEnabled(True)
         else:
@@ -43,7 +45,7 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
             size = self.objects[0].radius
         elif f == "Poly":
             t = 4
-            size = abs(self.objects[0].get_vertices()[0][0])
+            size = [float(self.wr.text()), float(self.height.text())]
         d = {0: {
             "mass": float(self.line_mass.text()),
             "friction": float(self.line_friction.text()),
@@ -53,7 +55,7 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
             'shape': t,
             'body_type': self.objects[1].body_type,
             'args': size,
-            'angle': float(self.angle.text())
+            'angle': float(self.angle.text()) * 3.14 / 180
         }}
         data = json.dumps(d)
         data = json.loads(str(data))
@@ -75,4 +77,3 @@ def start(objects):
     window.show()
     window.show_settings(objects)
     app.exec_()
-
