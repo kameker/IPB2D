@@ -1,5 +1,6 @@
 import pymunk as pm
 import json
+import os.path
 
 
 class ObjectsCreator:
@@ -75,7 +76,7 @@ class ObjectsCreator:
             k += 1
         data = json.dumps(self.d)
         data = json.loads(str(data))
-        with open('objects.json', "w") as file:
+        with open('fields/objects.json', "w") as file:
             json.dump(data, file, indent=4)
 
     def delete_all_objects(self, space):
@@ -110,28 +111,29 @@ class ObjectsCreator:
         self.objects.append((shape, body))
 
     def load_field(self, space):
-        with open("objects.json", 'r') as field:
-            field = json.load(field)
-            for i in field:
-                data = field[i]
-                body = pm.Body()
-                body.position = data['position']
-                if data['shape'] == 0:
-                    shape = pm.Circle(body, data['args'][0])
-                    shape.elasticity = 0.5
-                elif data['shape'] == 4:
-                    print(data['args'])
-                    shape = pm.Poly.create_box(body, (data['args'][0], data['args'][1]))
-                    shape.elasticity = 0
-                body.body_type = data['body_type']
-                shape.color = data['color']
-                shape.friction = data['friction']
-                shape.mass = data['mass']
-                body._set_angle(data['angle'])
-                space.add(body, shape)
-                self.bodyO.append(body)
-                self.shapeO.append(shape)
-                self.objects.append((shape, body))
+        if os.path.isfile("fields/objects.json"):
+            with open("fields/objects.json", 'r') as field:
+                field = json.load(field)
+                for i in field:
+                    data = field[i]
+                    body = pm.Body()
+                    body.position = data['position']
+                    if data['shape'] == 0:
+                        shape = pm.Circle(body, data['args'][0])
+                        shape.elasticity = 0.5
+                    elif data['shape'] == 4:
+                        print(data['args'])
+                        shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
+                        shape.elasticity = 0
+                    body.body_type = data['body_type']
+                    shape.color = data['color']
+                    shape.friction = data['friction']
+                    shape.mass = data['mass']
+                    body._set_angle(data['angle'])
+                    space.add(body, shape)
+                    self.bodyO.append(body)
+                    self.shapeO.append(shape)
+                    self.objects.append((shape, body))
 
     def get_info(self, space, position):
         search = space.point_query_nearest(position, 0, pm.ShapeFilter())
