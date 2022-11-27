@@ -122,7 +122,7 @@ class ObjectsCreator:
                         shape = pm.Circle(body, data['args'][0])
                         shape.elasticity = 0.5
                     elif data['shape'] == 4:
-                        print(data['args'])
+
                         shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
                         shape.elasticity = 0
                     body.body_type = data['body_type']
@@ -151,7 +151,6 @@ class ObjectsCreator:
             field = json.load(field)
             data = field['0']
             body.position = data['position']
-            print(data['position'])
             if data['shape'] == 0:
                 shape = pm.Circle(body, data['args'])
             elif data['shape'] == 4:

@@ -17,10 +17,14 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
         self.objects = []
 
     def show_settings(self, objects):
+        print(objects)
         f = str(objects[0])[15:str(objects[0]).index(' ')]
         if f == "Circle":
             size = objects[0].radius
             h = 0
+            self.height.hide()
+            self.label_2.hide()
+            self.label.setText("Радиус")
         elif f == "Poly":
             size = abs(objects[0].get_vertices()[0][0])
             h = abs(objects[0].get_vertices()[0][1])
@@ -45,26 +49,40 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
         if f == "Circle":
             t = 0
             size = float(self.wr.text())
-            print(size)
+            size2 = float(self.wr.text())
+            s = self.objects[0].radius
         elif f == "Poly":
             t = 4
             size = [float(self.wr.text()), float(self.height.text())]
-        print(self.line_elasticity.text())
-        d = {0: {
-            "mass": float(self.line_mass.text()),
-            "friction": float(self.line_friction.text()),
-            "elasticity": float(self.line_elasticity.text()),
-            "color": color,
-            'position': [float(self.X.text()), float(self.Y.text())],
-            'shape': t,
-            'body_type': self.objects[1].body_type,
-            'args': size,
-            'angle': float(self.angle.text()) * 3.14 / 180
-        }}
-        data = json.dumps(d)
-        data = json.loads(str(data))
-        with open('object.json', "w") as file:
-            json.dump(data, file, indent=4)
+            size2 = float(self.wr.text())
+            s = abs(self.objects[0].get_vertices()[0][0])
+            h = abs(self.objects[0].get_vertices()[0][1])
+        if float(self.line_mass.text()) == self.objects[0].mass and \
+                float(self.line_friction.text()) == self.objects[0].friction and \
+                float(self.line_elasticity.text()) == self.objects[0].elasticity and \
+                color == self.objects[0].color and \
+                float(self.X.text()) == self.objects[1].position[0] and \
+                float(self.Y.text()) == self.objects[1].position[1] and \
+                size2 == s and \
+                h == float(self.height.text()) and \
+                self.angle.text() == str(float(str(self.objects[1]._get_angle())[0:4]) * 180 / 3.14)[0:7]:
+            pass
+        else:
+            d = {0: {
+                "mass": float(self.line_mass.text()),
+                "friction": float(self.line_friction.text()),
+                "elasticity": float(self.line_elasticity.text()),
+                "color": color,
+                'position': [float(self.X.text()), float(self.Y.text())],
+                'shape': t,
+                'body_type': self.objects[1].body_type,
+                'args': size,
+                'angle': float(self.angle.text()) * 3.14 / 180
+            }}
+            data = json.dumps(d)
+            data = json.loads(str(data))
+            with open('object.json', "w") as file:
+                json.dump(data, file, indent=4)
 
     def fsave(self):
         self.save_so()

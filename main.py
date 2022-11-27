@@ -68,7 +68,6 @@ class Game():
                     if event.key == 115:
                         if on:
                             start(OCreator.get_info(space, mouse_position))
-                            world.resume_object()
                             OCreator.edit_object(space, mouse_position)
                         else:
                             OCreator.save_field()
