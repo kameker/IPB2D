@@ -25,7 +25,7 @@ class ObjectsCreator:
             body.position = pos
 
             shape = pm.Poly.create_box(body, size)
-            shape.friction = 1
+            shape.friction = 0
             shape.elasticity = 1
             space.add(body, shape)
 

@@ -69,6 +69,8 @@ class Game():
                         if on:
                             start(OCreator.get_info(space, mouse_position))
                             OCreator.edit_object(space, mouse_position)
+                            world.resume_object()
+                            on = False
                         else:
                             OCreator.save_field()
                             run = False

@@ -17,7 +17,6 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
         self.objects = []
 
     def show_settings(self, objects):
-        print(objects)
         f = str(objects[0])[15:str(objects[0]).index(' ')]
         if f == "Circle":
             size = objects[0].radius
@@ -66,6 +65,7 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
                 size2 == s and \
                 h == float(self.height.text()) and \
                 self.angle.text() == str(float(str(self.objects[1]._get_angle())[0:4]) * 180 / 3.14)[0:7]:
+            print("YES")
             pass
         else:
             d = {0: {
