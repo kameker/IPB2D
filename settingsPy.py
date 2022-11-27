@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui/settingsUI.ui'
+# Form implementation generated from reading ui file 'UI/settingsUI.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(400, 808)
+        Form.resize(385, 808)
         self.horizontalLayoutWidget = QtWidgets.QWidget(Form)
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(10, 20, 365, 80))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
@@ -82,13 +82,13 @@ class Ui_Form(object):
         self.save.setFont(font)
         self.save.setObjectName("save")
         self.static_b = QtWidgets.QRadioButton(Form)
-        self.static_b.setGeometry(QtCore.QRect(20, 550, 171, 21))
+        self.static_b.setGeometry(QtCore.QRect(20, 570, 171, 21))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.static_b.setFont(font)
         self.static_b.setObjectName("static_b")
         self.dynamic_b = QtWidgets.QRadioButton(Form)
-        self.dynamic_b.setGeometry(QtCore.QRect(20, 580, 161, 31))
+        self.dynamic_b.setGeometry(QtCore.QRect(20, 600, 161, 31))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.dynamic_b.setFont(font)
@@ -118,14 +118,32 @@ class Ui_Form(object):
         self.label_2.setFont(font)
         self.label_2.setObjectName("label_2")
         self.label_3 = QtWidgets.QLabel(Form)
-        self.label_3.setGeometry(QtCore.QRect(280, 520, 71, 31))
+        self.label_3.setGeometry(QtCore.QRect(290, 520, 71, 31))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.label_3.setFont(font)
         self.label_3.setObjectName("label_3")
         self.angle = QtWidgets.QLineEdit(Form)
-        self.angle.setGeometry(QtCore.QRect(250, 570, 113, 20))
+        self.angle.setGeometry(QtCore.QRect(250, 560, 113, 20))
         self.angle.setObjectName("angle")
+        self.label_4 = QtWidgets.QLabel(Form)
+        self.label_4.setGeometry(QtCore.QRect(270, 600, 47, 13))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        self.label_4.setFont(font)
+        self.label_4.setObjectName("label_4")
+        self.label_5 = QtWidgets.QLabel(Form)
+        self.label_5.setGeometry(QtCore.QRect(330, 600, 47, 13))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        self.label_5.setFont(font)
+        self.label_5.setObjectName("label_5")
+        self.X = QtWidgets.QLineEdit(Form)
+        self.X.setGeometry(QtCore.QRect(230, 630, 71, 20))
+        self.X.setObjectName("X")
+        self.Y = QtWidgets.QLineEdit(Form)
+        self.Y.setGeometry(QtCore.QRect(310, 630, 71, 20))
+        self.Y.setObjectName("Y")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -143,3 +161,5 @@ class Ui_Form(object):
         self.label.setText(_translate("Form", "длина/радиус"))
         self.label_2.setText(_translate("Form", "ширина"))
         self.label_3.setText(_translate("Form", "угол"))
+        self.label_4.setText(_translate("Form", "X"))
+        self.label_5.setText(_translate("Form", "Y"))

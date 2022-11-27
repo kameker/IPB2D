@@ -10,7 +10,7 @@ from world import World
 class Game():
     def __init__(self):
         self.WIDTH = 1000
-        self.HEIGHT = 900
+        self.HEIGHT = 1000
         self.objects = []
         self.fps = 60
         self.caption = "IPB2D"
@@ -50,8 +50,8 @@ class Game():
                         if on:
                             world.resume_object()
                             on = False
-                        else:
-                            world.pick_object(space, mouse_position)
+                        elif on == False and world.is_shape(space, mouse_position):
+                            world.pick_object(world.is_shape(space, mouse_position))
                             on = True
                     elif event.button == 4:
                         OCreator.rotate_object(space, mouse_position, 1)
@@ -68,6 +68,7 @@ class Game():
                     if event.key == 115:
                         if on:
                             start(OCreator.get_info(space, mouse_position))
+                            world.resume_object()
                             OCreator.edit_object(space, mouse_position)
                         else:
                             OCreator.save_field()

@@ -5,7 +5,7 @@ import os.path
 
 class ObjectsCreator:
     def __init__(self):
-        self.height = 900
+        self.height = 1000
         self.width = 1000
         self.objects = []
         self.bodyO = []
@@ -151,6 +151,7 @@ class ObjectsCreator:
             field = json.load(field)
             data = field['0']
             body.position = data['position']
+            print(data['position'])
             if data['shape'] == 0:
                 shape = pm.Circle(body, data['args'])
             elif data['shape'] == 4:

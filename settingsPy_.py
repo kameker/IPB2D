@@ -32,6 +32,8 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
         self.angle.setText(str(float(str(objects[1]._get_angle())[0:4]) * 180 / 3.14)[0:7])
         self.wr.setText(str(size))
         self.height.setText(str(h))
+        self.X.setText(str(objects[1].position[0])[0:6])
+        self.Y.setText(str(objects[1].position[1])[0:6])
         if objects[1].body_type == 0:
             self.static_b.setEnabled(True)
         else:
@@ -53,7 +55,7 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
             "friction": float(self.line_friction.text()),
             "elasticity": float(self.line_elasticity.text()),
             "color": color,
-            'position': self.objects[1].position,
+            'position': [float(self.X.text()), float(self.Y.text())],
             'shape': t,
             'body_type': self.objects[1].body_type,
             'args': size,

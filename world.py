@@ -16,11 +16,14 @@ class World(pg.Surface):
         self.shape_founded = None
         self.ground_y = self.height - 10
 
-    def pick_object(self, space, position):
+    def is_shape(self, space, position):
         search = space.point_query_nearest(position, 0, pm.ShapeFilter())
         if search is not None:
             if search.shape.collision_type == 0:
-                self.shape_founded = search.shape
+                return search
+
+    def pick_object(self, search):
+        self.shape_founded = search.shape
 
     def resume_object(self):
         self.shape_founded = None
@@ -35,9 +38,8 @@ class World(pg.Surface):
         search = space.point_query_nearest(position, 0, pm.ShapeFilter())
         if search is not None:
             if search.shape.collision_type == 0:
-                # Перевести координаты pymunk в координаты pygame
                 doo_center = pm.pygame_util.to_pygame(search.shape.body.position, self)
-                pg.draw.circle(self, [200, 0, 0], doo_center, r, width)
+                pg.draw.circle(self, [255, 0, 0], doo_center, r, width)
 
     def draw(self, space, window, draw_options):
         window.fill("gray")
