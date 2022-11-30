@@ -1,6 +1,7 @@
 import pymunk as pm
 import json
 import os.path
+from saveUI_ import sf
 
 
 class ObjectsCreator:
@@ -25,7 +26,7 @@ class ObjectsCreator:
             body.position = pos
 
             shape = pm.Poly.create_box(body, size)
-            shape.friction = 0
+            shape.friction = 1
             shape.elasticity = 1
             space.add(body, shape)
 
@@ -43,7 +44,7 @@ class ObjectsCreator:
                 self.bodyO[self.shapeO.index(search.shape)]._set_angle(
                     float(str(self.bodyO[self.shapeO.index(search.shape)]._get_angle())[0:6]) + (0.1 * arg))
 
-    def rotate_object_45(self, space, position, arg):
+    def rotate_object_45(self, space, position):
         search = space.point_query_nearest(position, 0, pm.ShapeFilter())
         if search is not None:
             if search.shape.collision_type == 0:
@@ -51,6 +52,9 @@ class ObjectsCreator:
                     float(str(self.bodyO[self.shapeO.index(search.shape)]._get_angle())[0:6]) + 0.785)
 
     def save_field(self):
+        sf()
+        with open("name.txt", "r") as namef:
+            name_file = namef.read()
         k = 0
         for i in self.objects:
             f = str(i[0])[15:str(i[0]).index(' ')]
@@ -76,7 +80,7 @@ class ObjectsCreator:
             k += 1
         data = json.dumps(self.d)
         data = json.loads(str(data))
-        with open('fields/objects.json', "w") as file:
+        with open(f'fields/{name_file}.json', "w") as file:
             json.dump(data, file, indent=4)
 
     def delete_all_objects(self, space):

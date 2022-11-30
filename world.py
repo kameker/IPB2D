@@ -30,7 +30,7 @@ class World(pg.Surface):
 
     def move_founded_object(self, pos):
         if self.shape_founded is not None:
-            if pos[1] < 900:
+            if pos[1] < 1000:
                 self.shape_founded.body.position = pos
                 self.shape_founded.body.velocity = 0, 0
 

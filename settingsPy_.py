@@ -65,7 +65,6 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
                 size2 == s and \
                 h == float(self.height.text()) and \
                 self.angle.text() == str(float(str(self.objects[1]._get_angle())[0:4]) * 180 / 3.14)[0:7]:
-            print("YES")
             pass
         else:
             d = {0: {
@@ -94,8 +93,9 @@ def except_hook(cls, exception, traceback):
 
 
 def start(objects):
-    app = QtWidgets.QApplication(sys.argv)
-    window = Class_settings()
-    window.show()
-    window.show_settings(objects)
-    app.exec_()
+    app4 = QtWidgets.QApplication(sys.argv)
+    window4 = Class_settings()
+    window4.show()
+    window4.show_settings(objects)
+    app4.exec_()
+

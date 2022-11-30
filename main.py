@@ -12,7 +12,7 @@ class Game():
         self.WIDTH = 1000
         self.HEIGHT = 1000
         self.objects = []
-        self.fps = 60
+        self.fps = 100
         self.caption = "IPB2D"
 
     def game_init(self):
@@ -80,19 +80,13 @@ class Game():
                     elif event.key == pg.K_TAB:
                         OCreator.delete_all_objects(space)
                     elif event.key == pg.K_LSHIFT and on:
-                        OCreator.rotate_object_45(space, mouse_position, 1)
+                        OCreator.rotate_object_45(space, mouse_position)
             world.move_founded_object(mouse_position)
             world.draw_circle(mouse_position, space)
             world.draw(space, window, draw_options)
-
-            self.show_fps(window, clock, font)
             space.step(1 / self.fps)
             clock.tick(self.fps)
         pg.quit()
-
-    def show_fps(self, camera, clock, font):
-        fps = font.render('{0:.2f}'.format(clock.get_fps()), True, [50, 50, 50])
-        camera.blit(fps, [10, 10])
 
 
 def run():
@@ -100,4 +94,4 @@ def run():
     game.game_init()
 
 
-run()
+#run()
