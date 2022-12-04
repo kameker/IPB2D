@@ -24,4 +24,4 @@ if __name__ == '__main__':
     window = ExampleApp()
     window.show()
     sys.excepthook = except_hook
-    sys.exit(app.exec_())
+    app.exec_()

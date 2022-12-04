@@ -88,14 +88,7 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
         print('save')
 
 
-def except_hook(cls, exception, traceback):
-    sys.__excepthook__(cls, exception, traceback)
-
-
 def start(objects):
-    app4 = QtWidgets.QApplication(sys.argv)
     window4 = Class_settings()
     window4.show()
     window4.show_settings(objects)
-    app4.exec_()
-

@@ -1,4 +1,3 @@
-import sys
 from PyQt5 import QtWidgets
 from saveUI import Ui_SaveWindow
 
@@ -13,13 +12,8 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_SaveWindow):
         with open("name.txt", "w") as file:
             if self.name.text():
                 file.write(self.name.text())
-def except_hook(cls, exception, traceback):
-    sys.__excepthook__(cls, exception, traceback)
+
 
 def sf():
-    app2 = QtWidgets.QApplication(sys.argv)
     window2 = ExampleApp()
     window2.show()
-    sys.excepthook = except_hook
-    sys.exit(app2.exec_())
-

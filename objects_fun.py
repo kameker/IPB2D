@@ -1,7 +1,7 @@
 import pymunk as pm
 import json
 import os.path
-from saveUI_ import sf
+from saveUI_ import ExampleApp
 
 
 class ObjectsCreator:
@@ -13,6 +13,13 @@ class ObjectsCreator:
         self.shapeO = []
         self.id = 0
         self.d = {}
+        self.window2 = 0
+
+    def searchf(self, space, position):
+        search = space.point_query_nearest(position, 0, pm.ShapeFilter())
+        if search is not None:
+            if search.shape.collision_type == 0:
+                return search.shape
 
     def ground(self, space):
         rects = [
@@ -30,29 +37,21 @@ class ObjectsCreator:
             shape.elasticity = 1
             space.add(body, shape)
 
-    def delete_object(self, space, position):
-        search = space.point_query_nearest(position, 0, pm.ShapeFilter())
-        if search is not None:
-            if search.shape.collision_type == 0:
-                space.remove(search.shape, self.bodyO[self.shapeO.index(search.shape)])
-        self.objects.remove((search.shape, self.bodyO[self.shapeO.index(search.shape)]))
+    def delete_object(self, space, searchd):
+        space.remove(searchd, self.bodyO[self.shapeO.index(searchd)])
+        self.objects.remove((searchd.shape, self.bodyO[self.shapeO.index(searchd)]))
 
-    def rotate_object(self, space, position, arg):
-        search = space.point_query_nearest(position, 0, pm.ShapeFilter())
-        if search is not None:
-            if search.shape.collision_type == 0:
-                self.bodyO[self.shapeO.index(search.shape)]._set_angle(
-                    float(str(self.bodyO[self.shapeO.index(search.shape)]._get_angle())[0:6]) + (0.1 * arg))
+    def rotate_object(self, searchd, arg):
+        self.bodyO[self.shapeO.index(searchd)]._set_angle(
+            float(str(self.bodyO[self.shapeO.index(searchd)]._get_angle())[0:6]) + (0.1 * arg))
 
-    def rotate_object_45(self, space, position):
-        search = space.point_query_nearest(position, 0, pm.ShapeFilter())
-        if search is not None:
-            if search.shape.collision_type == 0:
-                self.bodyO[self.shapeO.index(search.shape)]._set_angle(
-                    float(str(self.bodyO[self.shapeO.index(search.shape)]._get_angle())[0:6]) + 0.785)
+    def rotate_object_45(self,searchd):
+                self.bodyO[self.shapeO.index(searchd)]._set_angle(
+                    float(str(self.bodyO[self.shapeO.index(searchd)]._get_angle())[0:6]) + 0.785)
 
     def save_field(self):
-        sf()
+        self.window2 = ExampleApp()
+        self.window2.show()
         with open("name.txt", "r") as namef:
             name_file = namef.read()
         k = 0

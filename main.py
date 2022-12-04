@@ -20,12 +20,10 @@ class Game():
         window = pg.display.set_mode((self.WIDTH, self.HEIGHT))
         pg.display.set_caption(self.caption)
         clock = pg.time.Clock()
-        font = pg.font.SysFont("Arial", 14)
         pm.pygame_util.positive_y_is_up = False
+        self.game_run(window, clock)
 
-        self.game_run(window, clock, font)
-
-    def game_run(self, window, clock, font):
+    def game_run(self, window, clock):
         draw_options = pm.pygame_util.DrawOptions(window)
         world = World(self.WIDTH, self.HEIGHT, window)
         space = pm.Space()
@@ -54,9 +52,9 @@ class Game():
                             world.pick_object(world.is_shape(space, mouse_position))
                             on = True
                     elif event.button == 4:
-                        OCreator.rotate_object(space, mouse_position, 1)
+                        OCreator.rotate_object(OCreator.searchf(space, mouse_position), 1)
                     elif event.button == 5:
-                        OCreator.rotate_object(space, mouse_position, -1)
+                        OCreator.rotate_object(OCreator.searchf(space, mouse_position), -1)
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_SPACE:
                         if PAUSE:
@@ -75,12 +73,12 @@ class Game():
                             OCreator.save_field()
                             run = False
                     elif event.key == pg.K_DELETE:
-                        OCreator.delete_object(space, mouse_position)
+                        OCreator.delete_object(space, OCreator.searchf(space, mouse_position))
                         on = False
                     elif event.key == pg.K_TAB:
                         OCreator.delete_all_objects(space)
                     elif event.key == pg.K_LSHIFT and on:
-                        OCreator.rotate_object_45(space, mouse_position)
+                        OCreator.rotate_object_45(OCreator.searchf(space, mouse_position))
             world.move_founded_object(mouse_position)
             world.draw_circle(mouse_position, space)
             world.draw(space, window, draw_options)
@@ -93,5 +91,4 @@ def run():
     game = Game()
     game.game_init()
 
-
-#run()
+# run()
