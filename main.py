@@ -77,6 +77,8 @@ class Game():
                         on = False
                     elif event.key == pg.K_TAB:
                         OCreator.delete_all_objects(space)
+                        world.resume_object()
+                        on = False
                     elif event.key == pg.K_LSHIFT and on:
                         OCreator.rotate_object_45(OCreator.searchf(space, mouse_position))
             world.move_founded_object(mouse_position)
@@ -91,4 +93,4 @@ def run():
     game = Game()
     game.game_init()
 
-#run()
+run()

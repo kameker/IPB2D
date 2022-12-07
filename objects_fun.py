@@ -1,7 +1,8 @@
 import pymunk as pm
 import json
 import os.path
-from saveUI_ import ExampleApp
+
+from saveUI_ import sf
 
 
 class ObjectsCreator:
@@ -39,19 +40,18 @@ class ObjectsCreator:
 
     def delete_object(self, space, searchd):
         space.remove(searchd, self.bodyO[self.shapeO.index(searchd)])
-        self.objects.remove((searchd.shape, self.bodyO[self.shapeO.index(searchd)]))
+        self.objects.remove((searchd, self.bodyO[self.shapeO.index(searchd)]))
 
     def rotate_object(self, searchd, arg):
         self.bodyO[self.shapeO.index(searchd)]._set_angle(
             float(str(self.bodyO[self.shapeO.index(searchd)]._get_angle())[0:6]) + (0.1 * arg))
 
-    def rotate_object_45(self,searchd):
-                self.bodyO[self.shapeO.index(searchd)]._set_angle(
-                    float(str(self.bodyO[self.shapeO.index(searchd)]._get_angle())[0:6]) + 0.785)
+    def rotate_object_45(self, searchd):
+        self.bodyO[self.shapeO.index(searchd)]._set_angle(
+            float(str(self.bodyO[self.shapeO.index(searchd)]._get_angle())[0:6]) + 0.785)
 
     def save_field(self):
-        self.window2 = ExampleApp()
-        self.window2.show()
+        sf()
         with open("name.txt", "r") as namef:
             name_file = namef.read()
         k = 0
