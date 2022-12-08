@@ -37,10 +37,10 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
         self.height.setText(str(h))
         self.X.setText(str(objects[1].position[0])[0:6])
         self.Y.setText(str(objects[1].position[1])[0:6])
-        if objects[1].body_type == 0:
-            self.static_b.setEnabled(True)
+        if objects[1].body_type == 1:
+            self.static_b.setChecked(True)
         else:
-            self.dynamic_b.setEnabled(True)
+            self.dynamic_b.setChecked(True)
 
     def save_so(self):
         color = [int(i) for i in self.line_color.text()[1:-1].split(", ")]
@@ -56,39 +56,40 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
             size2 = float(self.wr.text())
             s = abs(self.objects[0].get_vertices()[0][0])
             h = abs(self.objects[0].get_vertices()[0][1])
-        if float(self.line_mass.text()) == self.objects[0].mass and \
-                float(self.line_friction.text()) == self.objects[0].friction and \
-                float(self.line_elasticity.text()) == self.objects[0].elasticity and \
-                color == self.objects[0].color and \
-                float(self.X.text()) == self.objects[1].position[0] and \
-                float(self.Y.text()) == self.objects[1].position[1] and \
-                size2 == s and \
-                h == float(self.height.text()) and \
-                self.angle.text() == str(float(str(self.objects[1]._get_angle())[0:4]) * 180 / 3.14)[0:7]:
-            pass
+        if self.static_b.isChecked():
+            print(1)
+            btype = 1
         else:
-            d = {0: {
-                "mass": float(self.line_mass.text()),
-                "friction": float(self.line_friction.text()),
-                "elasticity": float(self.line_elasticity.text()),
-                "color": color,
-                'position': [float(self.X.text()), float(self.Y.text())],
-                'shape': t,
-                'body_type': self.objects[1].body_type,
-                'args': size,
-                'angle': float(self.angle.text()) * 3.14 / 180
-            }}
-            data = json.dumps(d)
-            data = json.loads(str(data))
-            with open('object.json', "w") as file:
-                json.dump(data, file, indent=4)
-
+            btype = 0
+            print(0)
+        d = {0: {
+            "mass": float(self.line_mass.text()),
+            "friction": float(self.line_friction.text()),
+            "elasticity": float(self.line_elasticity.text()),
+            "color": color,
+            'position': [float(self.X.text()), float(self.Y.text())],
+            'shape': t,
+            'body_type': btype,
+            'args': size,
+            'angle': float(self.angle.text()) * 3.14 / 180
+        }}
+        data = json.dumps(d)
+        data = json.loads(str(data))
+        with open('object.json', "w") as file:
+            json.dump(data, file, indent=4)
     def fsave(self):
         self.save_so()
         print('save')
 
 
+def except_hook(cls, exception, traceback):
+    sys.__excepthook__(cls, exception, traceback)
+
+
 def start(objects):
+    app = QtWidgets.QApplication(sys.argv)
     window4 = Class_settings()
     window4.show()
     window4.show_settings(objects)
+    sys.excepthook = except_hook
+    app.exec_()

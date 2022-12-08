@@ -11,8 +11,8 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_IPB2D):
         self.newField.clicked.connect(self.sf)
 
     def sf(self):
-        self.close()
         run()
+        self.close()
 
 
 def except_hook(cls, exception, traceback):

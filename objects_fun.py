@@ -101,12 +101,12 @@ class ObjectsCreator:
         body.position = position
         if typeOb == 0:
             shape = pm.Circle(body, args)
-            shape.elasticity = 0.5
+            shape.elasticity = 0.1
         elif typeOb == 4:
             shape = pm.Poly.create_box(body, (args, args))
             shape.elasticity = 0
         shape.mass = mass
-        shape.friction = 0.5
+        shape.friction = 0
         shape.color = (0, 255, 0, 100)
         space.add(body, shape)
         self.bodyO.append(body)
@@ -114,8 +114,8 @@ class ObjectsCreator:
         self.objects.append((shape, body))
 
     def load_field(self, space):
-        if os.path.isfile("fields/objects.json"):
-            with open("fields/objects.json", 'r') as field:
+        if os.path.isfile("fields/13.json"):
+            with open("fields/13.json", 'r') as field:
                 field = json.load(field)
                 for i in field:
                     data = field[i]
@@ -150,7 +150,7 @@ class ObjectsCreator:
             if search is not None:
                 if search.shape.collision_type == 0:
                     body = self.bodyO[self.shapeO.index(search.shape)]
-            self.delete_object(space, position)
+            self.delete_object(space, search.shape)
             field = json.load(field)
             data = field['0']
             body.position = data['position']

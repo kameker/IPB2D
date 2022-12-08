@@ -1,3 +1,5 @@
+import sys
+
 from PyQt5 import QtWidgets
 from saveUI import Ui_SaveWindow
 
@@ -15,5 +17,7 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_SaveWindow):
 
 
 def sf():
+    app2 = QtWidgets.QApplication(sys.argv)
     window2 = ExampleApp()
     window2.show()
+    app2.exec_()
