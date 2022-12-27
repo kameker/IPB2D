@@ -34,7 +34,7 @@ class Game():
         on = False
         OCreator = ObjectsCreator()
         OCreator.ground(space)
-        OCreator.load_field(space)
+        #OCreator.load_field(space)
         while run:
             mouse_position = pg.mouse.get_pos()
             for event in pg.event.get():
@@ -43,7 +43,7 @@ class Game():
                     break
                 if event.type == pg.MOUSEBUTTONDOWN:
                     if event.button == 3:
-                        OCreator.add_obj(mouse_position, 4, space, 10, 30)
+                        OCreator.add_obj(mouse_position, 0, space, 1, 20)
                     elif event.button == 1:
                         if on:
                             world.resume_object()
@@ -51,9 +51,9 @@ class Game():
                         elif on == False and world.is_shape(space, mouse_position):
                             world.pick_object(world.is_shape(space, mouse_position))
                             on = True
-                    elif event.button == 4:
+                    elif event.button == 4 and on:
                         OCreator.rotate_object(OCreator.searchf(space, mouse_position), 1)
-                    elif event.button == 5:
+                    elif event.button == 5 and on:
                         OCreator.rotate_object(OCreator.searchf(space, mouse_position), -1)
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_SPACE:
@@ -72,6 +72,8 @@ class Game():
                         else:
                             OCreator.save_field()
                             run = False
+                    if event.key == 100:
+                        OCreator.set_90d_object((OCreator.searchf(space, mouse_position)))
                     elif event.key == pg.K_DELETE:
                         OCreator.delete_object(space, OCreator.searchf(space, mouse_position))
                         on = False
@@ -81,6 +83,10 @@ class Game():
                         on = False
                     elif event.key == pg.K_LSHIFT and on:
                         OCreator.rotate_object_45(OCreator.searchf(space, mouse_position))
+                    elif event.key == 99:
+                        OCreator.collect_shapes(space, mouse_position)
+                    elif event.key == 106:
+                        OCreator.connect_shapes(space)
             world.move_founded_object(mouse_position)
             world.draw_circle(mouse_position, space)
             world.draw(space, window, draw_options)

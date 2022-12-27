@@ -1,4 +1,5 @@
 import json
+import math
 import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QButtonGroup
@@ -32,7 +33,7 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
         self.line_friction.setText(str(objects[0].friction))
         self.line_elasticity.setText(str(objects[0].elasticity))
         self.line_color.setText(str(objects[0].color))
-        self.angle.setText(str(float(str(objects[1]._get_angle())[0:4]) * 180 / 3.14)[0:7])
+        self.angle.setText(str(float(str(objects[1]._get_angle())[0:10]) * 180 / 3.1415926535)[0:7])
         self.wr.setText(str(size))
         self.height.setText(str(h))
         self.X.setText(str(objects[1].position[0])[0:6])
@@ -71,7 +72,7 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
             'shape': t,
             'body_type': btype,
             'args': size,
-            'angle': float(self.angle.text()) * 3.14 / 180
+            'angle': float(self.angle.text()) * 3.1415926535 / 180
         }}
         data = json.dumps(d)
         data = json.loads(str(data))

@@ -1,3 +1,4 @@
+import pymunk
 import pymunk as pm
 import json
 import os.path
@@ -15,12 +16,31 @@ class ObjectsCreator:
         self.id = 0
         self.d = {}
         self.window2 = 0
+        self.cshapes = []
 
     def searchf(self, space, position):
         search = space.point_query_nearest(position, 0, pm.ShapeFilter())
         if search is not None:
             if search.shape.collision_type == 0:
                 return search.shape
+
+    def collect_shapes(self, space, position):
+        search = space.point_query_nearest(position, 0, pm.ShapeFilter())
+        if search is not None:
+            if search.shape.collision_type == 0:
+                self.cshapes.append(search.shape)
+
+    def connect_shapes(self, space):
+        f = self.cshapes[0]
+        for i in self.cshapes:
+            if i != f:
+                # joint = pymunk.PinJoint(self.bodyO[self.shapeO.index(f)], self.bodyO[self.shapeO.index(i)]) # нить
+                joint = pymunk.DampedSpring(self.bodyO[self.shapeO.index(f)], self.bodyO[self.shapeO.index(i)],
+                                            (0, 0),
+                                            (0, 0), 10, 50, 1)  # пружина
+                f = self.shapeO[self.shapeO.index(i)]
+                space.add(joint)
+                self.objects.append(joint)
 
     def ground(self, space):
         rects = [
@@ -38,13 +58,16 @@ class ObjectsCreator:
             shape.elasticity = 1
             space.add(body, shape)
 
+    def set_90d_object(self, searchd):
+        self.bodyO[self.shapeO.index(searchd)]._set_angle(0)
+
     def delete_object(self, space, searchd):
         space.remove(searchd, self.bodyO[self.shapeO.index(searchd)])
         self.objects.remove((searchd, self.bodyO[self.shapeO.index(searchd)]))
 
     def rotate_object(self, searchd, arg):
         self.bodyO[self.shapeO.index(searchd)]._set_angle(
-            float(str(self.bodyO[self.shapeO.index(searchd)]._get_angle())[0:6]) + (0.1 * arg))
+            float(str(self.bodyO[self.shapeO.index(searchd)]._get_angle())[0:10]) + (0.01 * arg))
 
     def rotate_object_45(self, searchd):
         self.bodyO[self.shapeO.index(searchd)]._set_angle(
@@ -84,8 +107,12 @@ class ObjectsCreator:
 
     def delete_all_objects(self, space):
         for i in self.objects:
-            space.remove(i[0], i[1])
+            try:
+                space.remove(i[0], i[1])
+            except:
+                space.remove(i)
         self.objects = []
+        self.cshapes = []
 
     def stop_all_objects(self):
         for i in self.objects:
@@ -95,27 +122,41 @@ class ObjectsCreator:
         for i in self.objects:
             i[1].body_type = pm.Body.DYNAMIC
 
-    def add_obj(self, position, typeOb, space, mass, args):
-        shape = None
+    def create_ball(self, position, space, mass, radius):
         body = pm.Body()
         body.position = position
-        if typeOb == 0:
-            shape = pm.Circle(body, args)
-            shape.elasticity = 0.1
-        elif typeOb == 4:
-            shape = pm.Poly.create_box(body, (args, args))
-            shape.elasticity = 0
+        shape = pm.Circle(body, radius)
+        shape.elasticity = 0.3
         shape.mass = mass
-        shape.friction = 0
+        shape.friction = 0.5
         shape.color = (0, 255, 0, 100)
         space.add(body, shape)
         self.bodyO.append(body)
         self.shapeO.append(shape)
         self.objects.append((shape, body))
 
+    def create_square(self, position, space, mass, size):
+        body = pm.Body()
+        body.position = position
+        shape = pm.Poly.create_box(body, (size, size))
+        shape.elasticity = 0.1
+        shape.mass = mass
+        shape.friction = 0.5
+        shape.color = (0, 255, 0, 100)
+        space.add(body, shape)
+        self.bodyO.append(body)
+        self.shapeO.append(shape)
+        self.objects.append((shape, body))
+
+    def add_obj(self, position, typeOb, space, mass, args):
+        if typeOb == 0:
+            self.create_ball(position, space, mass, args)
+        elif typeOb == 4:
+            self.create_square(position, space, mass, args)
+
     def load_field(self, space):
-        if os.path.isfile("fields/13.json"):
-            with open("fields/13.json", 'r') as field:
+        if os.path.isfile("fields/4.json"):
+            with open("fields/4.json", 'r') as field:
                 field = json.load(field)
                 for i in field:
                     data = field[i]
