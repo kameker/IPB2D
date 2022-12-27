@@ -41,7 +41,15 @@ class World(pg.Surface):
                 doo_center = pm.pygame_util.to_pygame(search.shape.body.position, self)
                 pg.draw.circle(self, [255, 0, 0], doo_center, r, width)
 
-    def draw(self, space, window, draw_options):
+    def draw(self, space, window, draw_options, type_o):
         window.fill("gray")
+        font1 = pg.font.SysFont('freesanbold.ttf', 50)
+        if type_o == 4:
+            text1 = font1.render('квадрат', True, (0, 255, 0))
+        else:
+            text1 = font1.render('круг', True, (0, 255, 0))
+        textRect1 = text1.get_rect()
+        textRect1.center = (100, 50)
+        window.blit(text1, textRect1)
         space.debug_draw(draw_options)
         pg.display.update()

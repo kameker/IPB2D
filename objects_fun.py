@@ -2,6 +2,7 @@ import pymunk
 import pymunk as pm
 import json
 import os.path
+from random import sample
 
 from saveUI_ import sf
 
@@ -77,6 +78,9 @@ class ObjectsCreator:
         sf()
         with open("name.txt", "r") as namef:
             name_file = namef.read()
+        if name_file == "":
+            for i in sample("0123456789", k=5):
+                name_file += str(i)
         k = 0
         for i in self.objects:
             f = str(i[0])[15:str(i[0]).index(' ')]
@@ -126,7 +130,7 @@ class ObjectsCreator:
         body = pm.Body()
         body.position = position
         shape = pm.Circle(body, radius)
-        shape.elasticity = 0.3
+        shape.elasticity = 0.01
         shape.mass = mass
         shape.friction = 0.5
         shape.color = (0, 255, 0, 100)
@@ -154,9 +158,9 @@ class ObjectsCreator:
         elif typeOb == 4:
             self.create_square(position, space, mass, args)
 
-    def load_field(self, space):
-        if os.path.isfile("fields/4.json"):
-            with open("fields/4.json", 'r') as field:
+    def load_field(self, space, name):
+        if os.path.isfile(f"fields/{name}.json"):
+            with open(f"fields/{name}.json", 'r') as field:
                 field = json.load(field)
                 for i in field:
                     data = field[i]

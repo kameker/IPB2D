@@ -34,7 +34,8 @@ class Game():
         on = False
         OCreator = ObjectsCreator()
         OCreator.ground(space)
-        #OCreator.load_field(space)
+        OCreator.load_field(space, "5")
+        type_o = 4
         while run:
             mouse_position = pg.mouse.get_pos()
             for event in pg.event.get():
@@ -43,7 +44,7 @@ class Game():
                     break
                 if event.type == pg.MOUSEBUTTONDOWN:
                     if event.button == 3:
-                        OCreator.add_obj(mouse_position, 0, space, 1, 20)
+                        OCreator.add_obj(mouse_position, type_o, space, 1, 20)
                     elif event.button == 1:
                         if on:
                             world.resume_object()
@@ -55,6 +56,16 @@ class Game():
                         OCreator.rotate_object(OCreator.searchf(space, mouse_position), 1)
                     elif event.button == 5 and on:
                         OCreator.rotate_object(OCreator.searchf(space, mouse_position), -1)
+                    elif event.button == 4:
+                        if type_o == 4:
+                            type_o = 0
+                        else:
+                            type_o = 4
+                    elif event.button == 5:
+                        if type_o == 4:
+                            type_o = 0
+                        else:
+                            type_o = 4
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_SPACE:
                         if PAUSE:
@@ -89,7 +100,7 @@ class Game():
                         OCreator.connect_shapes(space)
             world.move_founded_object(mouse_position)
             world.draw_circle(mouse_position, space)
-            world.draw(space, window, draw_options)
+            world.draw(space, window, draw_options, type_o)
             space.step(1 / self.fps)
             clock.tick(self.fps)
         pg.quit()
