@@ -9,10 +9,10 @@ from world import World
 
 class Game():
     def __init__(self):
-        self.WIDTH = 1000
+        self.WIDTH = 1920
         self.HEIGHT = 1000
         self.objects = []
-        self.fps = 100
+        self.fps = 300
         self.caption = "IPB2D"
 
     def game_init(self):
@@ -34,8 +34,9 @@ class Game():
         on = False
         OCreator = ObjectsCreator()
         OCreator.ground(space)
-        OCreator.load_field(space, "5")
-        type_o = 4
+        OCreator.load_field(space, "1")
+        type_o = "квадрат"
+        type_j = "пружина"
         while run:
             mouse_position = pg.mouse.get_pos()
             for event in pg.event.get():
@@ -57,15 +58,15 @@ class Game():
                     elif event.button == 5 and on:
                         OCreator.rotate_object(OCreator.searchf(space, mouse_position), -1)
                     elif event.button == 4:
-                        if type_o == 4:
-                            type_o = 0
+                        if type_o == "квадрат":
+                            type_o = "круг"
                         else:
-                            type_o = 4
+                            type_o = "квадрат"
                     elif event.button == 5:
-                        if type_o == 4:
-                            type_o = 0
+                        if type_j == "пружина":
+                            type_j = "нить"
                         else:
-                            type_o = 4
+                            type_j = "пружина"
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_SPACE:
                         if PAUSE:
@@ -83,7 +84,7 @@ class Game():
                         else:
                             OCreator.save_field()
                             run = False
-                    if event.key == 100:
+                    if event.key == 100 and on:
                         OCreator.set_90d_object((OCreator.searchf(space, mouse_position)))
                     elif event.key == pg.K_DELETE:
                         OCreator.delete_object(space, OCreator.searchf(space, mouse_position))
@@ -97,10 +98,9 @@ class Game():
                     elif event.key == 99:
                         OCreator.collect_shapes(space, mouse_position)
                     elif event.key == 106:
-                        OCreator.connect_shapes(space)
+                        OCreator.connect_shapes(space, type_j)
             world.move_founded_object(mouse_position)
-            world.draw_circle(mouse_position, space)
-            world.draw(space, window, draw_options, type_o)
+            world.draw(space, window, draw_options, type_o, clock, type_j)
             space.step(1 / self.fps)
             clock.tick(self.fps)
         pg.quit()

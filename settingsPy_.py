@@ -47,12 +47,12 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
         color = [int(i) for i in self.line_color.text()[1:-1].split(", ")]
         f = str(self.objects[0])[15:str(self.objects[0]).index(' ')]
         if f == "Circle":
-            t = 0
+            t = "круг"
             size = float(self.wr.text())
             size2 = float(self.wr.text())
             s = self.objects[0].radius
         elif f == "Poly":
-            t = 4
+            t = "квадрат"
             size = [float(self.wr.text()), float(self.height.text())]
             size2 = float(self.wr.text())
             s = abs(self.objects[0].get_vertices()[0][0])
@@ -77,7 +77,8 @@ class Class_settings(QtWidgets.QMainWindow, Ui_Form):
         data = json.dumps(d)
         data = json.loads(str(data))
         with open('object.json', "w") as file:
-            json.dump(data, file, indent=4)
+            json.dump(data, file, indent=4, ensure_ascii=False)
+
     def fsave(self):
         self.save_so()
         print('save')

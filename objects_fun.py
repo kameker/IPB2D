@@ -10,14 +10,17 @@ from saveUI_ import sf
 class ObjectsCreator:
     def __init__(self):
         self.height = 1000
-        self.width = 1000
+        self.width = 1920
         self.objects = []
         self.bodyO = []
         self.shapeO = []
         self.id = 0
         self.d = {}
         self.window2 = 0
-        self.cshapes = []
+        self.cshapes = [None, None]
+        self.flag = True
+        self.sshapes = []
+        self.objects_for_save = []
 
     def searchf(self, space, position):
         search = space.point_query_nearest(position, 0, pm.ShapeFilter())
@@ -29,19 +32,11 @@ class ObjectsCreator:
         search = space.point_query_nearest(position, 0, pm.ShapeFilter())
         if search is not None:
             if search.shape.collision_type == 0:
-                self.cshapes.append(search.shape)
-
-    def connect_shapes(self, space):
-        f = self.cshapes[0]
-        for i in self.cshapes:
-            if i != f:
-                # joint = pymunk.PinJoint(self.bodyO[self.shapeO.index(f)], self.bodyO[self.shapeO.index(i)]) # нить
-                joint = pymunk.DampedSpring(self.bodyO[self.shapeO.index(f)], self.bodyO[self.shapeO.index(i)],
-                                            (0, 0),
-                                            (0, 0), 10, 50, 1)  # пружина
-                f = self.shapeO[self.shapeO.index(i)]
-                space.add(joint)
-                self.objects.append(joint)
+                if self.flag:
+                    self.cshapes[0] = search.shape
+                    self.flag = False
+                else:
+                    self.cshapes[1] = search.shape
 
     def ground(self, space):
         rects = [
@@ -55,7 +50,7 @@ class ObjectsCreator:
             body.position = pos
 
             shape = pm.Poly.create_box(body, size)
-            shape.friction = 1
+            shape.friction = 0.3
             shape.elasticity = 1
             space.add(body, shape)
 
@@ -65,6 +60,7 @@ class ObjectsCreator:
     def delete_object(self, space, searchd):
         space.remove(searchd, self.bodyO[self.shapeO.index(searchd)])
         self.objects.remove((searchd, self.bodyO[self.shapeO.index(searchd)]))
+        self.objects_for_save.remove((searchd, self.bodyO[self.shapeO.index(searchd)]))
 
     def rotate_object(self, searchd, arg):
         self.bodyO[self.shapeO.index(searchd)]._set_angle(
@@ -72,7 +68,33 @@ class ObjectsCreator:
 
     def rotate_object_45(self, searchd):
         self.bodyO[self.shapeO.index(searchd)]._set_angle(
-            float(str(self.bodyO[self.shapeO.index(searchd)]._get_angle())[0:6]) + 0.785)
+            float(str(self.bodyO[self.shapeO.index(searchd)]._get_angle())[0:10]) + 0.785)
+
+    def connect_shapes(self, space, type_j):
+        """for i in self.cshapes:
+            if i != f:
+                # joint = pymunk.PinJoint(self.bodyO[self.shapeO.index(f)], self.bodyO[self.shapeO.index(i)]) # нить
+                joint = pymunk.DampedSpring(self.bodyO[self.shapeO.index(f)], self.bodyO[self.shapeO.index(i)],
+                                            (0, 0),
+                                            (0, 0), 10, 50, 1)  # пружина
+                f = self.shapeO[self.shapeO.index(i)]
+                space.add(joint)
+                self.objects.append(joint)"""
+        if self.cshapes[0] and self.cshapes[1]:
+            if type_j == "нить":
+                joint = pymunk.PinJoint(self.bodyO[self.shapeO.index(self.cshapes[0])],
+                                        self.bodyO[self.shapeO.index(self.cshapes[1])])
+            else:
+                joint = pymunk.DampedSpring(self.bodyO[self.shapeO.index(self.cshapes[0])],
+                                            self.bodyO[self.shapeO.index(self.cshapes[1])], (0, 0), (0, 0), 10, 50,
+                                            1)  # пружина
+
+            space.add(joint)
+            self.objects.append(joint)
+            self.sshapes.append(
+                [joint, (self.cshapes[0], self.bodyO[self.shapeO.index(self.cshapes[0])]),
+                 (self.cshapes[1], self.bodyO[self.shapeO.index(self.cshapes[1])]), type_j])
+            self.flag = True
 
     def save_field(self):
         sf()
@@ -82,14 +104,22 @@ class ObjectsCreator:
             for i in sample("0123456789", k=5):
                 name_file += str(i)
         k = 0
-        for i in self.objects:
+        npsl = []
+        list_of_objects_without_anco = []
+        for j in self.sshapes:
+            npsl.append(j[1])
+            npsl.append(j[2])
+        for i in self.objects_for_save:
+            if i not in npsl:
+                list_of_objects_without_anco.append(i)
+        for i in list_of_objects_without_anco:
             f = str(i[0])[15:str(i[0]).index(' ')]
             if f == "Circle":
-                t = 0
+                t = "круг"
                 size = i[0].radius
                 h = 0
             elif f == "Poly":
-                t = 4
+                t = "квадрат"
                 size = abs(i[0].get_vertices()[0][0])
                 h = abs(i[0].get_vertices()[0][1])
             self.d[k] = {
@@ -104,10 +134,41 @@ class ObjectsCreator:
                 'angle': i[1]._get_angle()
             }
             k += 1
+        for j in self.sshapes:
+            print(i)
+            d2 = {}
+            k2 = 0
+            vl = [j[1], j[2]]
+            for i in vl:
+                f = str(i[0])[15:str(i[0]).index(' ')]
+                if f == "Circle":
+                    t = "круг"
+                    size = i[0].radius
+                    h = 0
+                elif f == "Poly":
+                    t = "квадрат"
+                    size = abs(i[0].get_vertices()[0][0])
+                    h = abs(i[0].get_vertices()[0][1])
+                d2[k2] = {
+                    "mass": i[0].mass,
+                    "friction": i[0].friction,
+                    "elasticity": i[0].elasticity,
+                    "color": i[0].color,
+                    'position': i[1].position,
+                    'shape': t,
+                    'body_type': i[1].body_type,
+                    'args': [size, h],
+                    'angle': i[1]._get_angle()
+                }
+                k2 += 1
+            self.d[k] = {
+                f"{j[3]}": d2
+            }
+            k += 1
         data = json.dumps(self.d)
         data = json.loads(str(data))
         with open(f'fields/{name_file}.json', "w") as file:
-            json.dump(data, file, indent=4)
+            json.dump(data, file, indent=4, ensure_ascii=False)
 
     def delete_all_objects(self, space):
         for i in self.objects:
@@ -116,28 +177,33 @@ class ObjectsCreator:
             except:
                 space.remove(i)
         self.objects = []
-        self.cshapes = []
+        self.objects_for_save = []
+        self.cshapes = [None, None]
+        self.flag = True
 
     def stop_all_objects(self):
         for i in self.objects:
-            i[1].body_type = pm.Body.STATIC
+            if i != 'нить' and i != "пружина":
+                i[1].body_type = pm.Body.STATIC
 
     def resume_all_objects(self):
         for i in self.objects:
-            i[1].body_type = pm.Body.DYNAMIC
+            if i != 'нить' and i != "пружина":
+                i[1].body_type = pm.Body.DYNAMIC
 
     def create_ball(self, position, space, mass, radius):
         body = pm.Body()
         body.position = position
         shape = pm.Circle(body, radius)
-        shape.elasticity = 0.01
+        shape.elasticity = 0.4
         shape.mass = mass
-        shape.friction = 0.5
-        shape.color = (0, 255, 0, 100)
+        shape.friction = 0.4
+        shape.color = (100, 200, 100, 100)
         space.add(body, shape)
         self.bodyO.append(body)
         self.shapeO.append(shape)
         self.objects.append((shape, body))
+        self.objects_for_save.append((shape, body))
 
     def create_square(self, position, space, mass, size):
         body = pm.Body()
@@ -145,17 +211,18 @@ class ObjectsCreator:
         shape = pm.Poly.create_box(body, (size, size))
         shape.elasticity = 0.1
         shape.mass = mass
-        shape.friction = 0.5
-        shape.color = (0, 255, 0, 100)
+        shape.friction = 0.4
+        shape.color = (180, 100, 100, 100)
         space.add(body, shape)
         self.bodyO.append(body)
         self.shapeO.append(shape)
         self.objects.append((shape, body))
+        self.objects_for_save.append((shape, body))
 
     def add_obj(self, position, typeOb, space, mass, args):
-        if typeOb == 0:
+        if typeOb == "круг":
             self.create_ball(position, space, mass, args)
-        elif typeOb == 4:
+        elif typeOb == "квадрат":
             self.create_square(position, space, mass, args)
 
     def load_field(self, space, name):
@@ -164,24 +231,49 @@ class ObjectsCreator:
                 field = json.load(field)
                 for i in field:
                     data = field[i]
-                    body = pm.Body()
-                    body.position = data['position']
-                    if data['shape'] == 0:
-                        shape = pm.Circle(body, data['args'][0])
-                        shape.elasticity = 0.5
-                    elif data['shape'] == 4:
-
-                        shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
-                        shape.elasticity = 0
-                    body.body_type = data['body_type']
-                    shape.color = data['color']
-                    shape.friction = data['friction']
-                    shape.mass = data['mass']
-                    body._set_angle(data['angle'])
-                    space.add(body, shape)
-                    self.bodyO.append(body)
-                    self.shapeO.append(shape)
-                    self.objects.append((shape, body))
+                    if 'пружина' in data:
+                        data2 = data['пружина']
+                        SBODY = []
+                        for j in range(0, 2):
+                            data = data2[str(j)]
+                            body = pm.Body()
+                            body.position = data['position']
+                            if data['shape'] == "круг":
+                                shape = pm.Circle(body, data['args'][0])
+                                shape.elasticity = 0.5
+                            elif data['shape'] == 'квадрат':
+                                shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
+                                shape.elasticity = 0
+                            body.body_type = data['body_type']
+                            shape.color = data['color']
+                            shape.friction = data['friction']
+                            shape.mass = data['mass']
+                            body._set_angle(data['angle'])
+                            space.add(body, shape)
+                            self.bodyO.append(body)
+                            self.shapeO.append(shape)
+                            self.objects.append((shape, body))
+                            SBODY.append(body)
+                        joint = pymunk.DampedSpring(SBODY[0], SBODY[1], (0, 0), (0, 0), 10, 50, 1)
+                        space.add(joint)
+                    else:
+                        body = pm.Body()
+                        body.position = data['position']
+                        if data['shape'] == "круг":
+                            shape = pm.Circle(body, data['args'][0])
+                            shape.elasticity = 0.5
+                        elif data['shape'] == 'квадрат':
+                            shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
+                            shape.elasticity = 0
+                        body.body_type = data['body_type']
+                        shape.color = data['color']
+                        shape.friction = data['friction']
+                        shape.mass = data['mass']
+                        body._set_angle(data['angle'])
+                        space.add(body, shape)
+                        self.bodyO.append(body)
+                        self.shapeO.append(shape)
+                        self.objects.append((shape, body))
 
     def get_info(self, space, position):
         search = space.point_query_nearest(position, 0, pm.ShapeFilter())
@@ -199,9 +291,9 @@ class ObjectsCreator:
             field = json.load(field)
             data = field['0']
             body.position = data['position']
-            if data['shape'] == 0:
+            if data['shape'] == "круг":
                 shape = pm.Circle(body, data['args'])
-            elif data['shape'] == 4:
+            elif data['shape'] == "квадрат":
                 shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
             shape.elasticity = data['elasticity']
             body.body_type = data['body_type']
@@ -213,3 +305,4 @@ class ObjectsCreator:
             self.bodyO.append(body)
             self.shapeO.append(shape)
             self.objects.append((shape, body))
+            self.objects_for_save.append((shape, body))
