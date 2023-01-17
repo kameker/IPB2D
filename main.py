@@ -10,13 +10,18 @@ from world import World
 class Game():
     def __init__(self):
         self.WIDTH = 1920
-        self.HEIGHT = 1000
+        self.HEIGHT = 1080
         self.objects = []
-        self.fps = 300
+        self.fps = 144
         self.caption = "IPB2D"
 
     def game_init(self):
         pg.init()
+        si = pg.display.Info()
+        self.WIDTH = si.current_w
+        self.WIDTH = 250
+        self.HEIGHT = si.current_h
+        #self.HEIGHT = 1000
         window = pg.display.set_mode((self.WIDTH, self.HEIGHT))
         pg.display.set_caption(self.caption)
         clock = pg.time.Clock()
@@ -32,7 +37,7 @@ class Game():
         PAUSE = False
         run = True
         on = False
-        OCreator = ObjectsCreator()
+        OCreator = ObjectsCreator(self.HEIGHT, self.WIDTH)
         OCreator.ground(space)
         OCreator.load_field(space, "1")
         type_o = "квадрат"
@@ -99,6 +104,8 @@ class Game():
                         OCreator.collect_shapes(space, mouse_position)
                     elif event.key == 106:
                         OCreator.connect_shapes(space, type_j)
+                    elif event.key == 113:
+                        run = False
             world.move_founded_object(mouse_position)
             world.draw(space, window, draw_options, type_o, clock, type_j)
             space.step(1 / self.fps)

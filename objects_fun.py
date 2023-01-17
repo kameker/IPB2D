@@ -8,9 +8,9 @@ from saveUI_ import sf
 
 
 class ObjectsCreator:
-    def __init__(self):
-        self.height = 1000
-        self.width = 1920
+    def __init__(self, height, width):
+        self.height = height
+        self.width = width
         self.objects = []
         self.bodyO = []
         self.shapeO = []
@@ -60,7 +60,7 @@ class ObjectsCreator:
     def delete_object(self, space, searchd):
         space.remove(searchd, self.bodyO[self.shapeO.index(searchd)])
         self.objects.remove((searchd, self.bodyO[self.shapeO.index(searchd)]))
-        self.objects_for_save.remove((searchd, self.bodyO[self.shapeO.index(searchd)]))
+        self.objects_for_save = self.objects
 
     def rotate_object(self, searchd, arg):
         self.bodyO[self.shapeO.index(searchd)]._set_angle(
@@ -135,7 +135,6 @@ class ObjectsCreator:
             }
             k += 1
         for j in self.sshapes:
-            print(i)
             d2 = {}
             k2 = 0
             vl = [j[1], j[2]]
@@ -234,6 +233,7 @@ class ObjectsCreator:
                     if 'пружина' in data:
                         data2 = data['пружина']
                         SBODY = []
+                        SSHAPE = []
                         for j in range(0, 2):
                             data = data2[str(j)]
                             body = pm.Body()
@@ -244,6 +244,7 @@ class ObjectsCreator:
                             elif data['shape'] == 'квадрат':
                                 shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
                                 shape.elasticity = 0
+                            SSHAPE.append(shape)
                             body.body_type = data['body_type']
                             shape.color = data['color']
                             shape.friction = data['friction']
@@ -255,7 +256,11 @@ class ObjectsCreator:
                             self.objects.append((shape, body))
                             SBODY.append(body)
                         joint = pymunk.DampedSpring(SBODY[0], SBODY[1], (0, 0), (0, 0), 10, 50, 1)
+                        self.sshapes.append(
+                            [joint, (SSHAPE[0], self.bodyO[self.shapeO.index(SSHAPE[0])]),
+                             (SSHAPE[1], self.bodyO[self.shapeO.index(SSHAPE[1])]), "пружина"])
                         space.add(joint)
+                        self.objects.append(joint)
                     else:
                         body = pm.Body()
                         body.position = data['position']
@@ -274,6 +279,7 @@ class ObjectsCreator:
                         self.bodyO.append(body)
                         self.shapeO.append(shape)
                         self.objects.append((shape, body))
+                        self.objects_for_save.append((shape, body))
 
     def get_info(self, space, position):
         search = space.point_query_nearest(position, 0, pm.ShapeFilter())

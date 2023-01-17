@@ -30,7 +30,7 @@ class World(pg.Surface):
 
     def move_founded_object(self, pos):
         if self.shape_founded is not None:
-            if pos[1] < 1000:
+            if pos[1] < self.height:
                 self.shape_founded.body.position = pos
                 self.shape_founded.body.velocity = 0, 0
 
@@ -43,13 +43,13 @@ class World(pg.Surface):
         text2 = font1.render(f'{type_j}', True, (100, 100, 100))
 
         textRect1 = text1.get_rect()
-        textRect1.center = (100, 50)
+        textRect1.center = (self.width*0.05 + 40, 50)
 
         textRect2 = text2.get_rect()
-        textRect2.center = (1800, 50)
+        textRect2.center = (self.width * 0.95 - 40, 50)
 
         tfps = fps.get_rect()
-        tfps.center = (900, 50)
+        tfps.center = (self.width*0.5, 50)
 
         window.blit(text1, textRect1)
         window.blit(fps, tfps)
