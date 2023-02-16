@@ -1,27 +1,28 @@
+from random import sample
+
 import pygame as pg
 import pymunk as pm
 from pymunk import pygame_util
 from objects_fun import ObjectsCreator
 from settingsPy_ import start
-
+from saveUI_ import sf
 from world import World
 
 
 class Game():
-    def __init__(self):
+    def __init__(self, name):
         self.WIDTH = 1920
         self.HEIGHT = 1080
         self.objects = []
         self.fps = 144
         self.caption = "IPB2D"
+        self.name = name
 
     def game_init(self):
         pg.init()
         si = pg.display.Info()
         self.WIDTH = si.current_w
-        self.WIDTH = 250
         self.HEIGHT = si.current_h
-        #self.HEIGHT = 1000
         window = pg.display.set_mode((self.WIDTH, self.HEIGHT))
         pg.display.set_caption(self.caption)
         clock = pg.time.Clock()
@@ -29,6 +30,7 @@ class Game():
         self.game_run(window, clock)
 
     def game_run(self, window, clock):
+        OCreator = ObjectsCreator(self.HEIGHT, self.WIDTH)
         draw_options = pm.pygame_util.DrawOptions(window)
         world = World(self.WIDTH, self.HEIGHT, window)
         space = pm.Space()
@@ -37,9 +39,9 @@ class Game():
         PAUSE = False
         run = True
         on = False
-        OCreator = ObjectsCreator(self.HEIGHT, self.WIDTH)
+
         OCreator.ground(space)
-        OCreator.load_field(space, "1")
+        OCreator.load_field(space, self.name)
         type_o = "квадрат"
         type_j = "пружина"
         while run:
@@ -87,7 +89,13 @@ class Game():
                             world.resume_object()
                             on = False
                         else:
-                            OCreator.save_field()
+                            sf()
+                            with open("name.txt", "r") as namef:
+                                name_file = namef.read()
+                            if name_file == "":
+                                for i in sample("0123456789", k=5):
+                                    name_file += str(i)
+                            OCreator.save_field(name_file)
                             run = False
                     if event.key == 100 and on:
                         OCreator.set_90d_object((OCreator.searchf(space, mouse_position)))
@@ -113,8 +121,8 @@ class Game():
         pg.quit()
 
 
-def run():
-    game = Game()
+def run(name):
+    game = Game(name)
     game.game_init()
 
-run()
+# run()

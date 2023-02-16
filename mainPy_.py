@@ -2,6 +2,7 @@ import sys
 from PyQt5 import QtWidgets
 from mainPy import Ui_IPB2D
 from main import run
+from openUI_ import loadf
 
 
 class ExampleApp(QtWidgets.QMainWindow, Ui_IPB2D):
@@ -9,9 +10,14 @@ class ExampleApp(QtWidgets.QMainWindow, Ui_IPB2D):
         super().__init__()
         self.setupUi(self)
         self.newField.clicked.connect(self.sf)
+        self.loadField.clicked.connect(self.loadf)
 
     def sf(self):
-        run()
+        run("")
+        self.close()
+
+    def loadf(self):
+        loadf()
         self.close()
 
 
