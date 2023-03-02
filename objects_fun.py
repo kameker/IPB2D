@@ -2,9 +2,6 @@ import pymunk
 import pymunk as pm
 import json
 import os.path
-from random import sample
-from math import degrees, radians
-from saveUI_ import sf
 
 
 
@@ -130,24 +127,11 @@ class ObjectsCreator:
                 'angle': i[1]._get_angle()
             }
             k += 1
-        ADDED_OBJECTS = []
-        indexo = 0
         for j in self.sshapes:
             d2 = {}
             k2 = 0
             vl = [j[1], j[2]]
-            if indexo != len(self.sshapes) - 1:
-                print(self.sshapes[indexo + 1])
-                vl2 = [self.sshapes[indexo + 1][1],self.sshapes[indexo + 1][2], self.sshapes[indexo + 1][3]]
-            if vl2[0] in vl and indexo != len(self.sshapes) - 1:
-                vl.append(vl2[1])
-                self.sshapes.remove(self.sshapes[indexo + 1])
-            if vl2[1] in vl and indexo != len(self.sshapes) - 1:
-                self.sshapes.remove(self.sshapes[indexo + 1])
-                vl.append(vl2[0])
             for i in vl:
-                if i in ADDED_OBJECTS:
-                    print(True)
                 f = str(i[0])[15:str(i[0]).index(' ')]
                 if f == "Circle":
                     t = "круг"
@@ -169,11 +153,9 @@ class ObjectsCreator:
                     'angle': i[1]._get_angle()
                 }
                 k2 += 1
-                ADDED_OBJECTS.append(i)
             self.d[k] = {
                 f"{j[3]}": d2
             }
-            indexo += 1
             k += 1
         data = json.dumps(self.d)
         data = json.loads(str(data))

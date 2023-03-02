@@ -4,19 +4,17 @@ import pygame as pg
 import pymunk as pm
 from pymunk import pygame_util
 from objects_fun import ObjectsCreator
-from settingsPy_ import start
-from saveUI_ import sf
 from world import World
+from menu import PMenu
 
 
 class Game():
-    def __init__(self, name):
+    def __init__(self):
         self.WIDTH = 1920
-        self.HEIGHT = 1080
+        self.HEIGHT = 1000
         self.objects = []
         self.fps = 144
         self.caption = "IPB2D"
-        self.name = name
 
     def game_init(self):
         pg.init()
@@ -29,17 +27,20 @@ class Game():
         pm.pygame_util.positive_y_is_up = False
         self.game_run(window, clock)
 
+
     def game_run(self, window, clock):
         OCreator = ObjectsCreator(self.HEIGHT, self.WIDTH)
-        draw_options = pm.pygame_util.DrawOptions(window)
         world = World(self.WIDTH, self.HEIGHT, window)
+        draw_options = pm.pygame_util.DrawOptions(window)
+        menu = PMenu(self.WIDTH, self.HEIGHT, window)
+        menu.start()
+        self.name = menu.get_name()
         space = pm.Space()
         g = 981
         space.gravity = 0, g
         PAUSE = False
         run = True
         on = False
-
         OCreator.ground(space)
         OCreator.load_field(space, self.name)
         type_o = "квадрат"
@@ -75,6 +76,7 @@ class Game():
                         else:
                             type_j = "пружина"
                 if event.type == pg.KEYDOWN:
+
                     if event.key == pg.K_SPACE:
                         if PAUSE:
                             OCreator.resume_all_objects()
@@ -84,19 +86,22 @@ class Game():
                             PAUSE = True
                     if event.key == 115:
                         if on:
-                            start(OCreator.get_info(space, mouse_position))
+                            menu.SettingsMenu.enable()
+                            menu.show_settings(OCreator.get_info(space, mouse_position))
+                            menu.SettingsMenu.mainloop(window)
+                            menu.SettingsMenu.remove_widget(menu.SettingsMenu._widgets[-1])
                             OCreator.edit_object(space, mouse_position)
                             world.resume_object()
                             on = False
                         else:
-                            sf()
-                            with open("name.txt", "r") as namef:
-                                name_file = namef.read()
+                            menu.SaveMenu.mainloop(window)
+                            name_file = menu.save_field()
                             if name_file == "":
                                 for i in sample("0123456789", k=5):
                                     name_file += str(i)
                             OCreator.save_field(name_file)
                             run = False
+
                     if event.key == 100 and on:
                         OCreator.set_90d_object((OCreator.searchf(space, mouse_position)))
                     elif event.key == pg.K_DELETE:
@@ -121,8 +126,8 @@ class Game():
         pg.quit()
 
 
-def run(name):
-    game = Game(name)
+def run():
+    game = Game()
     game.game_init()
 
-# run()
+run()
