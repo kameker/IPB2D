@@ -27,7 +27,6 @@ class Game():
         pm.pygame_util.positive_y_is_up = False
         self.game_run(window, clock)
 
-
     def game_run(self, window, clock):
         OCreator = ObjectsCreator(self.HEIGHT, self.WIDTH)
         world = World(self.WIDTH, self.HEIGHT, window)
@@ -53,7 +52,10 @@ class Game():
                     break
                 if event.type == pg.MOUSEBUTTONDOWN:
                     if event.button == 3:
-                        OCreator.add_obj(mouse_position, type_o, space, 1, 20)
+                        data = OCreator.openStandartS(type_o)
+
+                        OCreator.add_obj(mouse_position, type_o, space, data[0], data[6], data[3], data[1], data[2],
+                                         data[-1] * 3.1415926535 / 180)
                     elif event.button == 1:
                         if on:
                             world.resume_object()
@@ -101,7 +103,23 @@ class Game():
                                     name_file += str(i)
                             OCreator.save_field(name_file)
                             run = False
-
+                    if event.key == 122:
+                        menu.showStandartS('квадрат')
+                        menu.StandartObjectS.enable()
+                        menu.StandartObjectS.mainloop(window)
+                        menu.saveStandartS('StandartS.json')
+                        menu.StandartObjectS.remove_widget(menu.StandartObjectS._widgets[-1])
+                    if event.key == 120:
+                        menu.showStandartS('круг')
+                        menu.StandartObjectS.enable()
+                        menu.StandartObjectS.mainloop(window)
+                        menu.saveStandartS('StandartB.json')
+                        menu.StandartObjectS.remove_widget(menu.StandartObjectS._widgets[-1])
+                    if event.key == 118:
+                        menu.StandartConnection.enable()
+                        menu.showStandartJ()
+                        menu.StandartConnection.mainloop(window)
+                        menu.saveStandartConnection()
                     if event.key == 100 and on:
                         OCreator.set_90d_object((OCreator.searchf(space, mouse_position)))
                     elif event.key == pg.K_DELETE:
@@ -129,5 +147,6 @@ class Game():
 def run():
     game = Game()
     game.game_init()
+
 
 run()

@@ -2,7 +2,7 @@ import json
 from os import listdir
 from os.path import isfile, join
 from random import sample
-
+from json import load
 import pygame_menu
 
 
@@ -52,13 +52,117 @@ class PMenu():
         self.SettingsMenu.add.text_input('X: ', default=0)
         self.SettingsMenu.add.text_input('Y: ', default=0)
         self.SettingsMenu.add.button('Сохранить', self.save_settings)
-        self.SettingsMenu.add.button('Выход', self.exits())
         self.objects = 0
+
+        self.StandartObjectS = pygame_menu.Menu('', self.WIDTH, self.HEIGHT,
+                                                theme=pygame_menu.themes.THEME_BLUE)
+        self.StandartObjectS.add.text_input('Масса: ', default=self.name_field)
+        self.StandartObjectS.add.text_input('Коэффициент трения: ', default=0)
+        self.StandartObjectS.add.text_input('Коэффициент упругости: ', default=0)
+        self.StandartObjectS.add.text_input('Красный R: ', default=0)
+        self.StandartObjectS.add.text_input('Зелёный G: ', default=0)
+        self.StandartObjectS.add.text_input('Синий B: ', default=0)
+        self.StandartObjectS.add.text_input('Прозрачность: ', default=0)
+        self.StandartObjectS.add.text_input('Длина: ', default=0)
+        self.StandartObjectS.add.text_input('Ширина: ', default=0)
+        self.StandartObjectS.add.text_input('Угол: ', default=0)
+        self.StandartObjectS.add.text_input('X: ', default=0)
+        self.StandartObjectS.add.text_input('Y: ', default=0)
+        self.StandartObjectS.add.button('Сохранить', self.closeStandartS)
+
+        self.StandartConnection = pygame_menu.Menu('', self.WIDTH, self.HEIGHT,
+                                                   theme=pygame_menu.themes.THEME_BLUE)
+        self.StandartConnection.add.text_input('Коэфецент жёсткости: ', default=self.name_field)
+        self.StandartConnection.add.button('Сохранить', self.closeStandartConnection)
+        self.StandartConnection.add.button('Выход', self.closeStandartConnection)
+
+    def closeStandartConnection(self):
+        self.StandartConnection.disable()
+
+    def saveStandartConnection(self):
+        d = {
+            "k": float(self.StandartConnection._widgets[0].get_value())
+        }
+        data = json.dumps(d)
+        data = json.loads(str(data))
+        with open("StandartJ.json", "w") as file:
+            json.dump(data, file, indent=4, ensure_ascii=False)
+
+    def showStandartJ(self):
+        with open('StandartJ.json', 'r') as f:
+            data = load(f)
+        self.StandartConnection._widgets[0].set_value(str(data['k']))
+
+    def showStandartS(self, ob):
+        if ob == "круг":
+            with open('StandartB.json', 'r') as f:
+                data = load(f)['0']
+            size = data['args'][0]
+            h = 0
+            self.StandartObjectS._widgets[7].set_title("Радиус: ")
+            self.StandartObjectS._widgets[8].hide()
+        elif ob == "квадрат":
+            with open('StandartS.json', 'r') as f:
+                data = load(f)['0']
+            self.StandartObjectS._widgets[7].set_title("Длина: ")
+            self.StandartObjectS._widgets[8].show()
+            size = data['args'][0]
+            h = data['args'][1]
+        self.StandartObjectS._widgets[0].set_value(str(data['mass']))
+        self.StandartObjectS._widgets[1].set_value(str(data['friction']))
+        self.StandartObjectS._widgets[2].set_value(str(data['elasticity']))
+        self.StandartObjectS._widgets[3].set_value(str(data['color'][0]))
+        self.StandartObjectS._widgets[4].set_value(str(data['color'][1]))
+        self.StandartObjectS._widgets[5].set_value(str(data['color'][2]))
+        self.StandartObjectS._widgets[6].set_value(str(data['color'][3]))
+        self.StandartObjectS._widgets[7].set_value(str(size))
+        self.StandartObjectS._widgets[8].set_value(str(h))
+        self.StandartObjectS._widgets[9].set_value(data['angle'])
+        self.StandartObjectS._widgets[10].set_value(str(data['position'][0]))
+        self.StandartObjectS._widgets[11].set_value(str(data['position'][1]))
+        if data['body_type'] == 0:
+            self.StandartObjectS.add.selector('Состояние:', [("Динамическое", 0), ("Статичное", 1)])
+        else:
+            self.StandartObjectS.add.selector('Состояние:', [("Статичное", 0), ("Динамическое", 1)])
+
+    def saveStandartS(self, f):
+        color = [int(self.StandartObjectS._widgets[3].get_value()), int(self.StandartObjectS._widgets[4].get_value()),
+                 int(self.StandartObjectS._widgets[5].get_value()), int(self.StandartObjectS._widgets[6].get_value())]
+        t = "квадрат"
+        size = [float(self.StandartObjectS._widgets[7].get_value()),
+                float(self.StandartObjectS._widgets[8].get_value())]
+        btype = self.StandartObjectS._widgets[-1].get_value()[1]
+        d = {0: {
+            "mass": float(self.StandartObjectS._widgets[0].get_value()),
+            "friction": float(self.StandartObjectS._widgets[1].get_value()),
+            "elasticity": float(self.StandartObjectS._widgets[2].get_value()),
+            "color": color,
+            'position': [float(self.StandartObjectS._widgets[10].get_value()),
+                         float(self.StandartObjectS._widgets[11].get_value())],
+            'shape': t,
+            'body_type': btype,
+            'args': size,
+            'angle': float(self.StandartObjectS._widgets[9].get_value())
+        }}
+        data = json.dumps(d)
+        data = json.loads(str(data))
+        with open(f, "w") as file:
+            json.dump(data, file, indent=4, ensure_ascii=False)
+        self.StandartObjectS.disable()
+
+    def closeStandartS(self):
+        self.StandartObjectS.disable()
+
+    def closeSettings(self):
+        self.SettingsMenu.disable()
+
+    def StandartS(self):
+        self.StandartObjectS.mainloop(self.surface)
 
     def openMain(self):
         self.FieldsMenu.disable()
         self.MainMenu.enable()
-        #self.MainMenu.mainloop(self.surface)
+        # self.MainMenu.mainloop(self.surface)
 
     def exits(self):
         self.SettingsMenu.disable()

@@ -1,8 +1,7 @@
 import pymunk
 import pymunk as pm
-import json
+from json import load, dumps, loads, dump
 import os.path
-
 
 
 class ObjectsCreator:
@@ -52,6 +51,20 @@ class ObjectsCreator:
             shape.elasticity = 1
             space.add(body, shape)
 
+    def openStandartS(self, type_o):
+        if type_o == "квадрат":
+            with open('StandartS.json', 'r') as f:
+                data = load(f)['0']
+                return [data['mass'], data['friction'], data['elasticity'], data['color'], data['position'],
+                        data['body_type'],
+                        data['args'], data['angle']]
+        else:
+            with open('StandartB.json', 'r') as f:
+                data = load(f)['0']
+                return [data['mass'], data['friction'], data['elasticity'], data['color'], data['position'],
+                        data['body_type'],
+                        data['args'][0], data['angle']]
+
     def set_90d_object(self, searchd):
         self.bodyO[self.shapeO.index(searchd)]._set_angle(0)
 
@@ -84,8 +97,10 @@ class ObjectsCreator:
                 joint = pymunk.PinJoint(self.bodyO[self.shapeO.index(self.cshapes[0])],
                                         self.bodyO[self.shapeO.index(self.cshapes[1])])
             else:
+                with open('StandartJ.json', 'r') as f:
+                    data = load(f)
                 joint = pymunk.DampedSpring(self.bodyO[self.shapeO.index(self.cshapes[0])],
-                                            self.bodyO[self.shapeO.index(self.cshapes[1])], (0, 0), (0, 0), 10, 50,
+                                            self.bodyO[self.shapeO.index(self.cshapes[1])], (0, 0), (0, 0), 10, float(data['k']),
                                             1)  # пружина
 
             space.add(joint)
@@ -95,7 +110,7 @@ class ObjectsCreator:
                  (self.cshapes[1], self.bodyO[self.shapeO.index(self.cshapes[1])]), type_j])
             self.flag = True
 
-    def save_field(self,name_file):
+    def save_field(self, name_file):
         k = 0
         npsl = []
         list_of_objects_without_anco = []
@@ -131,6 +146,7 @@ class ObjectsCreator:
             d2 = {}
             k2 = 0
             vl = [j[1], j[2]]
+            print(j)
             for i in vl:
                 f = str(i[0])[15:str(i[0]).index(' ')]
                 if f == "Circle":
@@ -154,18 +170,20 @@ class ObjectsCreator:
                 }
                 k2 += 1
             self.d[k] = {
-                f"{j[3]}": d2
+                f"{j[3]}": d2,
+                'k':j[0].stiffness
+
             }
             k += 1
-        data = json.dumps(self.d)
-        data = json.loads(str(data))
+        data = dumps(self.d)
+        data = loads(str(data))
         with open(f'fields/{name_file}.json', "w") as file:
-            json.dump(data, file, indent=4, ensure_ascii=False)
+            dump(data, file, indent=4, ensure_ascii=False)
 
     def load_field(self, space, name):
         if os.path.isfile(f"fields/{name}.json"):
             with open(f"fields/{name}.json", 'r') as field:
-                field = json.load(field)
+                field = load(field)
                 for i in field:
                     data = field[i]
                     if 'пружина' in data:
@@ -193,7 +211,7 @@ class ObjectsCreator:
                             self.shapeO.append(shape)
                             self.objects.append((shape, body))
                             SBODY.append(body)
-                        joint = pymunk.DampedSpring(SBODY[0], SBODY[1], (0, 0), (0, 0), 10, 50, 1)
+                        joint = pymunk.DampedSpring(SBODY[0], SBODY[1], (0, 0), (0, 0), 10, field[i]['k'], 1)
                         self.sshapes.append(
                             [joint, (SSHAPE[0], self.bodyO[self.shapeO.index(SSHAPE[0])]),
                              (SSHAPE[1], self.bodyO[self.shapeO.index(SSHAPE[1])]), "пружина"])
@@ -240,39 +258,44 @@ class ObjectsCreator:
             if i != 'нить' and i != "пружина":
                 i[1].body_type = pm.Body.DYNAMIC
 
-    def create_ball(self, position, space, mass, radius):
+    """[data['mass'], data['friction'], data['elasticity'], data['color'], data['position'], data['body_type'],
+                data['args'], data['angle']]"""
+
+    def add_obj(self, position, typeOb, space, mass, args, color, friction, elasticity, angle):
+        if typeOb == "круг":
+            self.create_ball(position, space, mass, args, color, friction, elasticity, angle)
+        elif typeOb == "квадрат":
+            self.create_square(position, space, mass, args, color, friction, elasticity, angle)
+
+    def create_square(self, position, space, mass, size, color, friction, elasticity, angle):
+        body = pm.Body()
+        body.position = position
+        shape = pm.Poly.create_box(body, (size[0] * 2, size[1] * 2))
+        shape.elasticity = elasticity
+        shape.mass = mass
+        shape.friction = friction
+        shape.color = color
+        space.add(body, shape)
+        body._set_angle(angle)
+        self.bodyO.append(body)
+        self.shapeO.append(shape)
+        self.objects.append((shape, body))
+        self.objects_for_save.append((shape, body))
+
+    def create_ball(self, position, space, mass, radius, color, friction, elasticity, angle):
         body = pm.Body()
         body.position = position
         shape = pm.Circle(body, radius)
-        shape.elasticity = 0.4
+        shape.elasticity = elasticity
         shape.mass = mass
-        shape.friction = 0.4
-        shape.color = (100, 200, 100, 100)
+        shape.friction = friction
+        shape.color = color
         space.add(body, shape)
+        body._set_angle(angle)
         self.bodyO.append(body)
         self.shapeO.append(shape)
         self.objects.append((shape, body))
         self.objects_for_save.append((shape, body))
-
-    def create_square(self, position, space, mass, size):
-        body = pm.Body()
-        body.position = position
-        shape = pm.Poly.create_box(body, (size, size))
-        shape.elasticity = 0.1
-        shape.mass = mass
-        shape.friction = 0.4
-        shape.color = (180, 100, 100, 100)
-        space.add(body, shape)
-        self.bodyO.append(body)
-        self.shapeO.append(shape)
-        self.objects.append((shape, body))
-        self.objects_for_save.append((shape, body))
-
-    def add_obj(self, position, typeOb, space, mass, args):
-        if typeOb == "круг":
-            self.create_ball(position, space, mass, args)
-        elif typeOb == "квадрат":
-            self.create_square(position, space, mass, args)
 
     def get_info(self, space, position):
         search = space.point_query_nearest(position, 0, pm.ShapeFilter())
@@ -287,7 +310,7 @@ class ObjectsCreator:
                 if search.shape.collision_type == 0:
                     body = self.bodyO[self.shapeO.index(search.shape)]
             self.delete_object(space, search.shape)
-            field = json.load(field)
+            field = load(field)
             data = field['0']
             body.position = data['position']
             if data['shape'] == "круг":
@@ -299,6 +322,7 @@ class ObjectsCreator:
             shape.color = data['color']
             shape.friction = data['friction']
             shape.mass = data['mass']
+            print(data['angle'])
             body._set_angle(data['angle'])
             space.add(body, shape)
             self.bodyO.append(body)
