@@ -71,7 +71,7 @@ class ObjectsCreator:
     def delete_object(self, space, searchd):
         space.remove(searchd, self.bodyO[self.shapeO.index(searchd)])
         self.objects.remove((searchd, self.bodyO[self.shapeO.index(searchd)]))
-        self.objects_for_save = self.objects
+        self.objects_for_save.remove((searchd, self.bodyO[self.shapeO.index(searchd)]))
 
     def rotate_object(self, searchd, arg):
         self.bodyO[self.shapeO.index(searchd)]._get_angle()
@@ -196,10 +196,9 @@ class ObjectsCreator:
                             body.position = data['position']
                             if data['shape'] == "круг":
                                 shape = pm.Circle(body, data['args'][0])
-                                shape.elasticity = 0.5
                             elif data['shape'] == 'квадрат':
                                 shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
-                                shape.elasticity = 0
+                            shape.elasticity = data['elasticity']
                             SSHAPE.append(shape)
                             body.body_type = data['body_type']
                             shape.color = data['color']
@@ -222,10 +221,9 @@ class ObjectsCreator:
                         body.position = data['position']
                         if data['shape'] == "круг":
                             shape = pm.Circle(body, data['args'][0])
-                            shape.elasticity = 0.5
                         elif data['shape'] == 'квадрат':
                             shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
-                            shape.elasticity = 0
+                        shape.elasticity = data['elasticity']
                         body.body_type = data['body_type']
                         shape.color = data['color']
                         shape.friction = data['friction']
@@ -261,16 +259,17 @@ class ObjectsCreator:
     """[data['mass'], data['friction'], data['elasticity'], data['color'], data['position'], data['body_type'],
                 data['args'], data['angle']]"""
 
-    def add_obj(self, position, typeOb, space, mass, args, color, friction, elasticity, angle):
+    def add_obj(self, position, typeOb, space, mass, args, color, friction, elasticity, angle,btype):
         if typeOb == "круг":
-            self.create_ball(position, space, mass, args, color, friction, elasticity, angle)
+            self.create_ball(position, space, mass, args, color, friction, elasticity, angle,btype)
         elif typeOb == "квадрат":
-            self.create_square(position, space, mass, args, color, friction, elasticity, angle)
+            self.create_square(position, space, mass, args, color, friction, elasticity, angle,btype)
 
-    def create_square(self, position, space, mass, size, color, friction, elasticity, angle):
+    def create_square(self, position, space, mass, size, color, friction, elasticity, angle,btype):
         body = pm.Body()
         body.position = position
         shape = pm.Poly.create_box(body, (size[0] * 2, size[1] * 2))
+        body.body_type = btype
         shape.elasticity = elasticity
         shape.mass = mass
         shape.friction = friction
@@ -282,7 +281,7 @@ class ObjectsCreator:
         self.objects.append((shape, body))
         self.objects_for_save.append((shape, body))
 
-    def create_ball(self, position, space, mass, radius, color, friction, elasticity, angle):
+    def create_ball(self, position, space, mass, radius, color, friction, elasticity, angle,btype):
         body = pm.Body()
         body.position = position
         shape = pm.Circle(body, radius)
@@ -290,6 +289,7 @@ class ObjectsCreator:
         shape.mass = mass
         shape.friction = friction
         shape.color = color
+        body.body_type = btype
         space.add(body, shape)
         body._set_angle(angle)
         self.bodyO.append(body)
@@ -322,7 +322,6 @@ class ObjectsCreator:
             shape.color = data['color']
             shape.friction = data['friction']
             shape.mass = data['mass']
-            print(data['angle'])
             body._set_angle(data['angle'])
             space.add(body, shape)
             self.bodyO.append(body)
