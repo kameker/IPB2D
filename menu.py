@@ -12,10 +12,18 @@ class PMenu():
         self.WIDTH = width
         self.HEIGHT = height
         self.surface = surface
+
+        self.StandartG = pygame_menu.Menu('', self.WIDTH, self.HEIGHT,
+                                          theme=pygame_menu.themes.THEME_BLUE)
+        self.StandartG.add.text_input('Ускорение свободного падения: ')
+        self.StandartG.add.button('Сохранить', self.saveStandartG)
+        self.StandartG.add.button('Выход', self.closeStandartG)
+
         self.MainMenu = pygame_menu.Menu('', self.WIDTH, self.HEIGHT,
                                          theme=pygame_menu.themes.THEME_BLUE)
         self.MainMenu.add.button('Новое поле', self.start_the_game)
         self.MainMenu.add.button('Загрузить поле', self.LoadMenu)
+        self.MainMenu.add.button('Настройки', self.openStandartG)
         self.MainMenu.add.button('Выход', pygame_menu.events.EXIT)
 
         self.fields = [f[0:-5] for f in listdir('fields') if isfile(join('fields', f))]
@@ -76,6 +84,31 @@ class PMenu():
         self.StandartConnection.add.button('Сохранить', self.closeStandartConnection)
         self.StandartConnection.add.button('Выход', self.closeStandartConnection)
 
+
+
+    def saveStandartG(self):
+        with open("StandartG.json", "w") as file:
+            d = {
+                "g": self.StandartG._widgets[0].get_value()
+            }
+            data = json.dumps(d)
+            data = json.loads(str(data))
+            json.dump(data, file, indent=4, ensure_ascii=False)
+        self.closeStandartG()
+
+    def closeStandartG(self):
+        self.StandartG.disable()
+        self.MainMenu.enable()
+        self.MainMenu.mainloop(self.surface)
+
+    def openStandartG(self):
+        self.StandartG.enable()
+        with open('StandartG.json', 'r') as f:
+            data = load(f)
+        self.StandartG._widgets[0].set_value(data['g'])
+        self.StandartG.mainloop(self.surface)
+        self.MainMenu.disable()
+
     def closeStandartConnection(self):
         self.StandartConnection.disable()
 
@@ -120,6 +153,7 @@ class PMenu():
         self.StandartObjectS._widgets[9].set_value(data['angle'])
         self.StandartObjectS._widgets[10].set_value(str(data['position'][0]))
         self.StandartObjectS._widgets[11].set_value(str(data['position'][1]))
+        print(data['body_type'])
         if data['body_type'] == 0:
             self.StandartObjectS.add.selector('Состояние:', [("Динамическое", 0), ("Статичное", 1)])
         else:
@@ -131,7 +165,11 @@ class PMenu():
         t = "квадрат"
         size = [float(self.StandartObjectS._widgets[7].get_value()),
                 float(self.StandartObjectS._widgets[8].get_value())]
-        btype = self.StandartObjectS._widgets[-1].get_value()[1]
+        btype = self.StandartObjectS._widgets[-1].get_value()[0][0]
+        if btype == "Динамическое":
+            btype = 0
+        else:
+            btype = 1
         d = {0: {
             "mass": float(self.StandartObjectS._widgets[0].get_value()),
             "friction": float(self.StandartObjectS._widgets[1].get_value()),

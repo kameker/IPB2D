@@ -1,3 +1,4 @@
+from json import load
 from random import sample
 
 import pygame as pg
@@ -13,7 +14,7 @@ class Game():
         self.WIDTH = 1920
         self.HEIGHT = 1000
         self.objects = []
-        self.fps = 144
+        self.fps = 200
         self.caption = "IPB2D"
 
     def game_init(self):
@@ -35,7 +36,10 @@ class Game():
         menu.start()
         self.name = menu.get_name()
         space = pm.Space()
-        g = 981
+        with open('StandartG.json', 'r') as f:
+            data2 = load(f)
+        g = int(data2['g'])
+        print(g)
         space.gravity = 0, g
         PAUSE = False
         run = True
@@ -55,7 +59,7 @@ class Game():
                         data = OCreator.openStandartS(type_o)
 
                         OCreator.add_obj(mouse_position, type_o, space, data[0], data[6], data[3], data[1], data[2],
-                                         data[-1] * 3.1415926535 / 180)
+                                         data[-1] * 3.1415926535 / 180, data[5])
                     elif event.button == 1:
                         if on:
                             world.resume_object()
@@ -78,7 +82,6 @@ class Game():
                         else:
                             type_j = "пружина"
                 if event.type == pg.KEYDOWN:
-
                     if event.key == pg.K_SPACE:
                         if PAUSE:
                             OCreator.resume_all_objects()
@@ -123,8 +126,9 @@ class Game():
                     if event.key == 100 and on:
                         OCreator.set_90d_object((OCreator.searchf(space, mouse_position)))
                     elif event.key == pg.K_DELETE:
-                        OCreator.delete_object(space, OCreator.searchf(space, mouse_position))
-                        on = False
+                        if on:
+                            OCreator.delete_object(space, OCreator.searchf(space, mouse_position))
+                            on = False
                     elif event.key == pg.K_TAB:
                         OCreator.delete_all_objects(space)
                         world.resume_object()
