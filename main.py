@@ -39,7 +39,7 @@ class Game():
         with open('StandartG.json', 'r') as f:
             data2 = load(f)
         g = int(data2['g'])
-        print(g)
+
         space.gravity = 0, g
         PAUSE = False
         run = True

@@ -137,7 +137,6 @@ class ObjectsCreator:
             d2 = {}
             k2 = 0
             vl = [j[1], j[2]]
-            print(j)
             for i in vl:
                 f = str(i[0])[15:str(i[0]).index(' ')]
                 if f == "Circle":
@@ -160,11 +159,15 @@ class ObjectsCreator:
                     'angle': i[1]._get_angle()
                 }
                 k2 += 1
-            self.d[k] = {
-                f"{j[3]}": d2,
-                'k':j[0].stiffness
-
-            }
+            if j[3] == "пружина":
+                self.d[k] = {
+                    f"{j[3]}": d2,
+                    'k':j[0].stiffness
+                }
+            else:
+                self.d[k] = {
+                    f"{j[3]}": d2
+                }
             k += 1
         data = dumps(self.d)
         data = loads(str(data))
@@ -202,6 +205,37 @@ class ObjectsCreator:
                             self.objects.append((shape, body))
                             SBODY.append(body)
                         joint = pymunk.DampedSpring(SBODY[0], SBODY[1], (0, 0), (0, 0), 10, field[i]['k'], 1)
+                        self.sshapes.append(
+                            [joint, (SSHAPE[0], self.bodyO[self.shapeO.index(SSHAPE[0])]),
+                             (SSHAPE[1], self.bodyO[self.shapeO.index(SSHAPE[1])]), "пружина"])
+                        space.add(joint)
+                        self.objects.append(joint)
+                    elif 'нить' in data:
+                        data2 = data['нить']
+                        SBODY = []
+                        SSHAPE = []
+                        for j in range(0, 2):
+                            data = data2[str(j)]
+                            body = pm.Body()
+                            body.position = data['position']
+                            if data['shape'] == "ball":
+                                shape = pm.Circle(body, data['args'][0])
+                            elif data['shape'] == 'square':
+                                shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
+                            shape.elasticity = data['elasticity']
+                            SSHAPE.append(shape)
+                            body.body_type = data['body_type']
+                            shape.color = data['color']
+                            shape.friction = data['friction']
+                            shape.mass = data['mass']
+                            body._set_angle(data['angle'])
+                            space.add(body, shape)
+                            self.bodyO.append(body)
+                            self.shapeO.append(shape)
+                            self.objects.append((shape, body))
+                            SBODY.append(body)
+                        joint = pymunk.PinJoint(SBODY[0],
+                                                SBODY[1])
                         self.sshapes.append(
                             [joint, (SSHAPE[0], self.bodyO[self.shapeO.index(SSHAPE[0])]),
                              (SSHAPE[1], self.bodyO[self.shapeO.index(SSHAPE[1])]), "пружина"])
@@ -251,7 +285,6 @@ class ObjectsCreator:
                 data['args'], data['angle']]"""
 
     def add_obj(self, position, typeOb, space, mass, args, color, friction, elasticity, angle,btype):
-        print(typeOb)
         if typeOb == "ball":
             self.create_ball(position, space, mass, args, color, friction, elasticity, angle,btype)
         elif typeOb == "square":
