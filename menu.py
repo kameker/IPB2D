@@ -215,7 +215,11 @@ class PMenu():
         elif f == "Poly":
             t = "square"
             size = [float(self.SettingsMenu._widgets[7].get_value()), float(self.SettingsMenu._widgets[8].get_value())]
-        btype = self.SettingsMenu._widgets[-1].get_value()[1]
+        #btype = self.SettingsMenu._widgets[-1].get_value()[1]
+        if self.SettingsMenu._widgets[-1].get_value()[0][0] == "Динамическое":
+            btype = 0
+        else:
+            btype = 1
         d = {0: {
             "mass": float(self.SettingsMenu._widgets[0].get_value()),
             "friction": float(self.SettingsMenu._widgets[1].get_value()),

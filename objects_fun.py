@@ -238,7 +238,7 @@ class ObjectsCreator:
                                                 SBODY[1])
                         self.sshapes.append(
                             [joint, (SSHAPE[0], self.bodyO[self.shapeO.index(SSHAPE[0])]),
-                             (SSHAPE[1], self.bodyO[self.shapeO.index(SSHAPE[1])]), "пружина"])
+                             (SSHAPE[1], self.bodyO[self.shapeO.index(SSHAPE[1])]), "нить"])
                         space.add(joint)
                         self.objects.append(joint)
                     else:
