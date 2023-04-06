@@ -127,14 +127,14 @@ class PMenu():
         self.StandartConnection._widgets[0].set_value(str(data['k']))
 
     def showStandartS(self, ob):
-        if ob == "круг":
+        if ob == "ball":
             with open('StandartB.json', 'r') as f:
                 data = load(f)['0']
             size = data['args'][0]
             h = 0
             self.StandartObjectS._widgets[7].set_title("Радиус: ")
             self.StandartObjectS._widgets[8].hide()
-        elif ob == "квадрат":
+        elif ob == "square":
             with open('StandartS.json', 'r') as f:
                 data = load(f)['0']
             self.StandartObjectS._widgets[7].set_title("Длина: ")
@@ -210,10 +210,10 @@ class PMenu():
                  int(self.SettingsMenu._widgets[5].get_value()), int(self.SettingsMenu._widgets[6].get_value())]
         f = str(self.objects[0])[15:str(self.objects[0]).index(' ')]
         if f == "Circle":
-            t = "круг"
+            t = "ball"
             size = float(self.SettingsMenu._widgets[7].get_value())
         elif f == "Poly":
-            t = "квадрат"
+            t = "square"
             size = [float(self.SettingsMenu._widgets[7].get_value()), float(self.SettingsMenu._widgets[8].get_value())]
         btype = self.SettingsMenu._widgets[-1].get_value()[1]
         d = {0: {

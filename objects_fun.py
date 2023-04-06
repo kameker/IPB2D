@@ -52,7 +52,7 @@ class ObjectsCreator:
             space.add(body, shape)
 
     def openStandartS(self, type_o):
-        if type_o == "квадрат":
+        if type_o == "square":
             with open('StandartS.json', 'r') as f:
                 data = load(f)['0']
                 return [data['mass'], data['friction'], data['elasticity'], data['color'], data['position'],
@@ -83,15 +83,6 @@ class ObjectsCreator:
             float(str(self.bodyO[self.shapeO.index(searchd)]._get_angle())[0:10]) + 0.785)
 
     def connect_shapes(self, space, type_j):
-        """for i in self.cshapes:
-            if i != f:
-                # joint = pymunk.PinJoint(self.bodyO[self.shapeO.index(f)], self.bodyO[self.shapeO.index(i)]) # нить
-                joint = pymunk.DampedSpring(self.bodyO[self.shapeO.index(f)], self.bodyO[self.shapeO.index(i)],
-                                            (0, 0),
-                                            (0, 0), 10, 50, 1)  # пружина
-                f = self.shapeO[self.shapeO.index(i)]
-                space.add(joint)
-                self.objects.append(joint)"""
         if self.cshapes[0] and self.cshapes[1]:
             if type_j == "нить":
                 joint = pymunk.PinJoint(self.bodyO[self.shapeO.index(self.cshapes[0])],
@@ -123,11 +114,11 @@ class ObjectsCreator:
         for i in list_of_objects_without_anco:
             f = str(i[0])[15:str(i[0]).index(' ')]
             if f == "Circle":
-                t = "круг"
+                t = "ball"
                 size = i[0].radius
                 h = 0
             elif f == "Poly":
-                t = "квадрат"
+                t = "square"
                 size = abs(i[0].get_vertices()[0][0])
                 h = abs(i[0].get_vertices()[0][1])
             self.d[k] = {
@@ -150,11 +141,11 @@ class ObjectsCreator:
             for i in vl:
                 f = str(i[0])[15:str(i[0]).index(' ')]
                 if f == "Circle":
-                    t = "круг"
+                    t = "ball"
                     size = i[0].radius
                     h = 0
                 elif f == "Poly":
-                    t = "квадрат"
+                    t = "square"
                     size = abs(i[0].get_vertices()[0][0])
                     h = abs(i[0].get_vertices()[0][1])
                 d2[k2] = {
@@ -194,9 +185,9 @@ class ObjectsCreator:
                             data = data2[str(j)]
                             body = pm.Body()
                             body.position = data['position']
-                            if data['shape'] == "круг":
+                            if data['shape'] == "ball":
                                 shape = pm.Circle(body, data['args'][0])
-                            elif data['shape'] == 'квадрат':
+                            elif data['shape'] == 'square':
                                 shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
                             shape.elasticity = data['elasticity']
                             SSHAPE.append(shape)
@@ -219,9 +210,9 @@ class ObjectsCreator:
                     else:
                         body = pm.Body()
                         body.position = data['position']
-                        if data['shape'] == "круг":
+                        if data['shape'] == "ball":
                             shape = pm.Circle(body, data['args'][0])
-                        elif data['shape'] == 'квадрат':
+                        elif data['shape'] == 'square':
                             shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
                         shape.elasticity = data['elasticity']
                         body.body_type = data['body_type']
@@ -260,9 +251,10 @@ class ObjectsCreator:
                 data['args'], data['angle']]"""
 
     def add_obj(self, position, typeOb, space, mass, args, color, friction, elasticity, angle,btype):
-        if typeOb == "круг":
+        print(typeOb)
+        if typeOb == "ball":
             self.create_ball(position, space, mass, args, color, friction, elasticity, angle,btype)
-        elif typeOb == "квадрат":
+        elif typeOb == "square":
             self.create_square(position, space, mass, args, color, friction, elasticity, angle,btype)
 
     def create_square(self, position, space, mass, size, color, friction, elasticity, angle,btype):
@@ -313,9 +305,9 @@ class ObjectsCreator:
             field = load(field)
             data = field['0']
             body.position = data['position']
-            if data['shape'] == "круг":
+            if data['shape'] == "ball":
                 shape = pm.Circle(body, data['args'])
-            elif data['shape'] == "квадрат":
+            elif data['shape'] == "square":
                 shape = pm.Poly.create_box(body, (data['args'][0] * 2, data['args'][1] * 2))
             shape.elasticity = data['elasticity']
             body.body_type = data['body_type']

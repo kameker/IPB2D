@@ -2,7 +2,7 @@
     "0": {
         "mass": 1.0,
         "friction": 0.4,
-        "elasticity": 1.1,
+        "elasticity": 1.0,
         "color": [
             255,
             100,

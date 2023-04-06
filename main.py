@@ -46,7 +46,7 @@ class Game():
         on = False
         OCreator.ground(space)
         OCreator.load_field(space, self.name)
-        type_o = "квадрат"
+        type_o = "square"
         type_j = "пружина"
         while run:
             mouse_position = pg.mouse.get_pos()
@@ -57,7 +57,6 @@ class Game():
                 if event.type == pg.MOUSEBUTTONDOWN:
                     if event.button == 3:
                         data = OCreator.openStandartS(type_o)
-
                         OCreator.add_obj(mouse_position, type_o, space, data[0], data[6], data[3], data[1], data[2],
                                          data[-1] * 3.1415926535 / 180, data[5])
                     elif event.button == 1:
@@ -72,10 +71,10 @@ class Game():
                     elif event.button == 5 and on:
                         OCreator.rotate_object(OCreator.searchf(space, mouse_position), -1)
                     elif event.button == 4:
-                        if type_o == "квадрат":
-                            type_o = "круг"
+                        if type_o == "square":
+                            type_o = "ball"
                         else:
-                            type_o = "квадрат"
+                            type_o = "square"
                     elif event.button == 5:
                         if type_j == "пружина":
                             type_j = "нить"
@@ -107,13 +106,13 @@ class Game():
                             OCreator.save_field(name_file)
                             run = False
                     if event.key == 122:
-                        menu.showStandartS('квадрат')
+                        menu.showStandartS('square')
                         menu.StandartObjectS.enable()
                         menu.StandartObjectS.mainloop(window)
                         menu.saveStandartS('StandartS.json')
                         menu.StandartObjectS.remove_widget(menu.StandartObjectS._widgets[-1])
                     if event.key == 120:
-                        menu.showStandartS('круг')
+                        menu.showStandartS('ball')
                         menu.StandartObjectS.enable()
                         menu.StandartObjectS.mainloop(window)
                         menu.saveStandartS('StandartB.json')
